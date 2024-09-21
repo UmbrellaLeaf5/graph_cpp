@@ -1,9 +1,22 @@
 #pragma once
 
 // std libs:
+#include <algorithm>
 #include <iostream>
+#include <numeric>
+#include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
+
+// clang-format off
+
+#define pass {}
+#define raise throw
+#define except catch
+
+using std::size_t;
+// clang-format on
 
 /**
  * @brief перегрузка, которая выводит все элементы вектора в поток
