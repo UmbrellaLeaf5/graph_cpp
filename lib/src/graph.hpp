@@ -62,6 +62,14 @@ class Graph {
 
   weight_t GetWeightOfEdge(const std::pair<size_t, size_t>& edge) const;
 
+  void AddVert(size_t vert);
+  void AddEdge(size_t start_vert, size_t end_vert, weight_t weight);
+  void AddEdge(size_t start_vert, size_t end_vert);
+
+  void RemoveVert(size_t vert);
+  void RemoveEdge(const std::pair<size_t, size_t>& edge_pair);
+  void RemoveEdge(const std::tuple<size_t, size_t, weight_t>& edge_tuple);
+
  private:
   class Edge {
    public:

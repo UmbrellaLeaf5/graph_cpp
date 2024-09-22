@@ -188,3 +188,73 @@ weight_t Graph::GetWeightOfEdge(const std::pair<size_t, size_t>& edge) const {
 
   return it->Weight();
 }
+
+void Graph::AddVert(size_t vert) {
+  if (!Contains(verts_, vert)) verts_.push_back(vert);
+}
+
+void Graph::AddEdge(size_t start_vert, size_t end_vert, weight_t weight) {
+  AddVert(start_vert);
+  AddVert(end_vert);
+
+  try {
+    edges_.emplace_back(Edge(start_vert, end_vert, weight));
+  }
+
+  except(const std::exception& ex) {
+    raise std::invalid_argument(std::string("AddEdge: ") + ex.what());
+  }
+}
+
+void Graph::AddEdge(size_t start_vert, size_t end_vert) {
+  if (IsWeighted())
+    raise std::logic_error(
+        "AddEdge: weighted graph must consist of weighted edges.");
+
+  AddVert(start_vert);
+  AddVert(end_vert);
+
+  edges_.emplace_back(Edge(start_vert, end_vert));
+}
+
+void Graph::RemoveVert(size_t vert) {
+  if (!Contains(Verts(), vert))
+    raise std::invalid_argument("RemoveVert: there is no such vert in graph: " +
+                                std::to_string(vert));
+
+  verts_.erase(std::remove(verts_.begin(), verts_.end(), vert), verts_.end());
+
+  edges_.erase(std::remove_if(edges_.begin(), edges_.end(),
+                              [vert](const Edge& edge) {
+                                return edge.StartVert() == vert ||
+                                       edge.EndVert() == vert;
+                              }),
+               edges_.end());
+}
+
+void Graph::RemoveEdge(const std::pair<size_t, size_t>& edge_pair) {
+  if (!ContainsEdge(edge_pair)) {
+    throw std::invalid_argument("RemoveEdge: there is no such edge in graph: " +
+                                Edge(edge_pair).Name());
+  }
+
+  edges_.erase(std::remove_if(edges_.begin(), edges_.end(),
+                              [&edge_pair](const Edge& e) {
+                                return Edge(e.StartVert(), e.EndVert()) ==
+                                       Edge(edge_pair);
+                              }),
+               edges_.end());
+}
+
+void Graph::RemoveEdge(const std::tuple<size_t, size_t, weight_t>& edge_tuple) {
+  if (!ContainsEdge(edge_tuple)) {
+    throw std::invalid_argument("RemoveEdge: there is no such edge in graph: " +
+                                Edge(edge_tuple).Name());
+  }
+
+  edges_.erase(std::remove_if(edges_.begin(), edges_.end(),
+                              [&edge_tuple](const Edge& e) {
+                                return e == Edge(edge_tuple);
+                              }),
+               edges_.end());
+}

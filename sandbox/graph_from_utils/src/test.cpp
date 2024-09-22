@@ -374,3 +374,166 @@ TEST(GraphTest, GetWeightOfEdgeInNonWeightedGraph) {
 
   ASSERT_THROW(non_weighted_graph.GetWeightOfEdge({0, 1}), std::logic_error);
 }
+
+TEST(GraphTest, AddVert) {
+  Graph g;
+
+  // Тест добавления новой вершины
+  g.AddVert(0);
+  EXPECT_EQ(g.VertsAmount(), 1);
+  EXPECT_TRUE(Contains(g.Verts(), size_t(0)));
+
+  // Тест добавления уже существующей вершины
+  g.AddVert(0);
+  EXPECT_EQ(g.VertsAmount(), 1);
+  EXPECT_TRUE(Contains(g.Verts(), size_t(0)));
+}
+
+TEST(GraphTest, AddEdgeUnweighted) {
+  Graph g;
+
+  g.AddEdge(0, 1);
+  EXPECT_EQ(g.EdgesAmount(), 1);
+  EXPECT_TRUE(g.ContainsEdge({0, 1}));
+
+  g.AddEdge(0, 1);
+  EXPECT_EQ(g.EdgesAmount(), 2);
+  EXPECT_TRUE(g.ContainsEdge({0, 1}));
+
+  g.AddEdge(2, 3);
+  EXPECT_EQ(g.VertsAmount(), 4);
+  EXPECT_TRUE(Contains(g.Verts(), size_t(2)));
+  EXPECT_TRUE(Contains(g.Verts(), size_t(3)));
+}
+
+TEST(GraphTest, AddEdgeWeighted) {
+  Graph g;
+
+  g.AddEdge(0, 1, 10);
+  EXPECT_EQ(g.EdgesAmount(), 1);
+  EXPECT_TRUE(g.ContainsEdge({0, 1, 10}));
+  EXPECT_EQ(g.GetWeightOfEdge({0, 1}), 10);
+
+  // std::cout << g << std::endl;
+
+  // g.AddEdge(0, 1, 15);
+
+  // если пользователь решает добавить то же ребро,
+  // но с другим весом - он сам дурак
+
+  // std::cout << g << std::endl;
+
+  // g.RemoveDuplicates();
+  // std::cout << g << std::endl;
+
+  // EXPECT_EQ(g.EdgesAmount(), 2);
+  // EXPECT_TRUE(g.ContainsEdge({0, 1, 15}));
+  // EXPECT_EQ(g.GetWeightOfEdge({0, 1}), 15);
+
+  EXPECT_THROW(g.AddEdge(2, 3), std::logic_error);
+}
+
+TEST(GraphTest, RemoveVert) {
+  Graph g;
+  g.AddVert(1);
+  g.AddVert(2);
+  g.AddVert(3);
+  g.AddEdge(1, 2, 5);
+  g.AddEdge(2, 3, 7);
+
+  ASSERT_NO_THROW(g.RemoveVert(2));
+  EXPECT_FALSE(Contains(g.Verts(), size_t(2)));
+  EXPECT_FALSE(g.ContainsEdge({1, 2}));
+  EXPECT_FALSE(g.ContainsEdge({2, 3}));
+
+  ASSERT_THROW(g.RemoveVert(4), std::invalid_argument);
+}
+
+TEST(GraphTest, RemoveEdgeByPair) {
+  Graph g;
+  g.AddVert(1);
+  g.AddVert(2);
+  g.AddVert(3);
+  g.AddEdge(1, 2, 5);
+  g.AddEdge(2, 3, 7);
+
+  std::cout << g << std::endl;
+
+  ASSERT_NO_THROW(g.RemoveEdge({1, 2}));
+  EXPECT_FALSE(g.ContainsEdge({1, 2}));
+  EXPECT_TRUE(g.ContainsEdge({2, 3}));
+
+  std::cout << g << std::endl;
+
+  ASSERT_THROW(g.RemoveEdge({1, 3}), std::invalid_argument);
+}
+
+TEST(GraphTest, RemoveEdgeByTuple) {
+  Graph g;
+  g.AddVert(1);
+  g.AddVert(2);
+  g.AddVert(3);
+  g.AddEdge(1, 2, 5);
+  g.AddEdge(2, 3, 7);
+
+  ASSERT_NO_THROW(g.RemoveEdge({2, 3, 7}));
+  EXPECT_FALSE(g.ContainsEdge({2, 3, 7}));
+  EXPECT_TRUE(g.ContainsEdge({1, 2, 5}));
+
+  ASSERT_THROW(g.RemoveEdge({1, 3, 10}), std::invalid_argument);
+}
+
+TEST(GraphTest, AddAndRemoveVerts) {
+  Graph g;
+  EXPECT_EQ(g.VertsAmount(), 0);
+
+  g.AddVert(1);
+  g.AddVert(2);
+  g.AddVert(3);
+  EXPECT_EQ(g.VertsAmount(), 3);
+  EXPECT_TRUE(Contains(g.Verts(), size_t(1)));
+  EXPECT_TRUE(Contains(g.Verts(), size_t(2)));
+  EXPECT_TRUE(Contains(g.Verts(), size_t(3)));
+
+  g.RemoveVert(2);
+  EXPECT_EQ(g.VertsAmount(), 2);
+  EXPECT_TRUE(Contains(g.Verts(), size_t(1)));
+  EXPECT_FALSE(Contains(g.Verts(), size_t(2)));
+  EXPECT_TRUE(Contains(g.Verts(), size_t(3)));
+}
+
+TEST(GraphTest, AddAndRemoveEdges) {
+  Graph g;
+  g.AddVert(1);
+  g.AddVert(2);
+  g.AddVert(3);
+
+  g.AddEdge(1, 2, 5);
+  g.AddEdge(2, 3, 7);
+  EXPECT_EQ(g.EdgesAmount(), 2);
+  EXPECT_TRUE(g.ContainsEdge({1, 2, 5}));
+  EXPECT_TRUE(g.ContainsEdge({2, 3, 7}));
+
+  g.RemoveEdge({1, 2, 5});
+  EXPECT_EQ(g.EdgesAmount(), 1);
+  EXPECT_FALSE(g.ContainsEdge({1, 2, 5}));
+  EXPECT_TRUE(g.ContainsEdge({2, 3, 7}));
+}
+
+TEST(GraphTest, ContainsAndGetVerts) {
+  Graph g;
+  g.AddVert(1);
+  g.AddVert(2);
+  g.AddVert(3);
+
+  EXPECT_TRUE(Contains(g.Verts(), size_t(1)));
+  EXPECT_TRUE(Contains(g.Verts(), size_t(2)));
+  EXPECT_TRUE(Contains(g.Verts(), size_t(3)));
+  EXPECT_FALSE(Contains(g.Verts(), size_t(4)));
+
+  std::vector<size_t> verts = g.Verts();
+  EXPECT_EQ(verts.size(), 3);
+  EXPECT_TRUE(std::find(verts.begin(), verts.end(), 1) != verts.end());
+  EXPECT_TRUE(std::find(verts.begin(), verts.end(), 2) != verts.end());
+  EXPECT_TRUE(std::find(verts.begin(), verts.end(), 3) != verts.end());
+}

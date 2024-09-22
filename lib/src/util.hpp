@@ -66,7 +66,7 @@ inline std::ostream& operator<<(std::ostream& os,
  */
 template <typename Type>
 inline std::istream& operator>>(std::istream& is, std::vector<Type>& vec) {
-  // MEANS: размер вектора
+  // @brief размер вектора
   long size = 0;
 
   std::cout << "Enter array size: ";
@@ -79,7 +79,7 @@ inline std::istream& operator>>(std::istream& is, std::vector<Type>& vec) {
     if (size <= 0) std::cout << "Invalid size input. Try again: ";
   }
 
-  // MEANS: текущий элемент
+  // @brief текущий элемент
   Type curr;
 
   vec.clear();  // (для перезаписи нужна отчистка)
@@ -96,6 +96,14 @@ inline std::istream& operator>>(std::istream& is, std::vector<Type>& vec) {
   return is;
 }
 
+/**
+ * @brief Проверяет наличие элемента в векторе
+ * @tparam T: тип элемента
+ * @param vec: исходный вектор
+ * @param value: искомое значение
+ * @return true: элемент найден
+ * @return false: элемент не найден
+ */
 template <typename T>
 bool Contains(const std::vector<T>& vec, const T& value) {
   auto it = std::find(vec.begin(), vec.end(), value);
