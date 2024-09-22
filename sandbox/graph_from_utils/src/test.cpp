@@ -10,7 +10,7 @@ TEST(GraphTest, CreateNonWeightedGraph) {
   ASSERT_EQ(graph.EdgesAmount(), 3);
 
   ASSERT_FALSE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsDirect());
+  ASSERT_TRUE(graph.IsDirected());
 }
 
 TEST(GraphTest, CreateWeightedGraph) {
@@ -22,7 +22,7 @@ TEST(GraphTest, CreateWeightedGraph) {
   ASSERT_EQ(graph.EdgesAmount(), 3);
 
   ASSERT_TRUE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsDirect());
+  ASSERT_TRUE(graph.IsDirected());
 }
 
 TEST(GraphTest, CreateGraphFromAdjacencyMatrix) {
@@ -103,8 +103,8 @@ TEST(GraphTest, CreateGraphFromAdjacencyList) {
 
   ASSERT_FALSE(graph.IsWeighted());
 
-  graph.Direct();
-  ASSERT_TRUE(graph.IsDirect());
+  graph.MakeDirected();
+  ASSERT_TRUE(graph.IsDirected());
 
   // std::cout << graph.GetAdjMatrix() << std::endl;
   // std::cout << graph.GetAdjList() << std::endl;
@@ -114,9 +114,9 @@ TEST(GraphTest, MakeUndirected) {
   std::vector<std::pair<size_t, size_t>> edges = {{0, 1}, {1, 2}, {2, 0}};
   Graph g = Graph::GraphNonWeighted(edges);
 
-  ASSERT_TRUE(g.IsDirect());
+  ASSERT_TRUE(g.IsDirected());
   g.MakeUndirected();
-  ASSERT_FALSE(g.IsDirect());
+  ASSERT_FALSE(g.IsDirected());
 }
 
 TEST(GraphTest, CreateGraphWithEmptyEdges) {
@@ -126,7 +126,7 @@ TEST(GraphTest, CreateGraphWithEmptyEdges) {
   ASSERT_EQ(g.VertsAmount(), 0);
   ASSERT_EQ(g.EdgesAmount(), 0);
   ASSERT_FALSE(g.IsWeighted());
-  ASSERT_TRUE(g.IsDirect());
+  ASSERT_TRUE(g.IsDirected());
 }
 
 TEST(GraphTest, CreateGraphWithDuplicateEdges) {
@@ -138,21 +138,21 @@ TEST(GraphTest, CreateGraphWithDuplicateEdges) {
   ASSERT_EQ(g.VertsAmount(), 3);
   ASSERT_EQ(g.EdgesAmount(), 5);
   ASSERT_FALSE(g.IsWeighted());
-  ASSERT_TRUE(g.IsDirect());
+  ASSERT_TRUE(g.IsDirected());
 
   g.RemoveDuplicates();
 
   ASSERT_EQ(g.VertsAmount(), 3);
   ASSERT_EQ(g.EdgesAmount(), 3);
   ASSERT_FALSE(g.IsWeighted());
-  ASSERT_TRUE(g.IsDirect());
+  ASSERT_TRUE(g.IsDirected());
 
   g.MakeUndirected();
 
   ASSERT_EQ(g.VertsAmount(), 3);
   ASSERT_EQ(g.EdgesAmount(), 2);
   ASSERT_FALSE(g.IsWeighted());
-  ASSERT_FALSE(g.IsDirect());
+  ASSERT_FALSE(g.IsDirected());
 }
 
 TEST(GraphTest, CreateGraphWithInvalidWeights) {
@@ -171,7 +171,6 @@ TEST(GraphTest, CreateGraphFromAdjMatrixWithInvalidSize) {
 TEST(GraphTest, GraphFromMapTest) {
   std::unordered_map<std::string, weight_t> edges_dict = {
       {"0->1", 5}, {"2->1", 1}, {"3->2", 2}, {"1->3", 3}};
-
   Graph graph = Graph::GraphFromMap(edges_dict);
 
   // graph.PrintAdjList();
@@ -181,7 +180,7 @@ TEST(GraphTest, GraphFromMapTest) {
   ASSERT_EQ(graph.EdgesAmount(), 4);
 
   ASSERT_TRUE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsDirect());
+  ASSERT_TRUE(graph.IsDirected());
 
   std::unordered_map<std::string, weight_t> empty_edges_dict;
   Graph empty_graph = Graph::GraphFromMap(empty_edges_dict);
@@ -190,7 +189,7 @@ TEST(GraphTest, GraphFromMapTest) {
   ASSERT_EQ(empty_graph.EdgesAmount(), 0);
 
   ASSERT_FALSE(empty_graph.IsWeighted());
-  ASSERT_TRUE(empty_graph.IsDirect());
+  ASSERT_TRUE(empty_graph.IsDirected());
 
   std::unordered_map<std::string, weight_t> invalid_edges_dict = {
       {"0-1", 0}, {"2-1", 1}, {"3->2", 2}, {"1>3", 3}};
@@ -209,7 +208,7 @@ TEST(GraphTest, GraphFromMapTest) {
   ASSERT_EQ(graph.EdgesAmount(), 4);
 
   ASSERT_TRUE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsDirect());
+  ASSERT_TRUE(graph.IsDirected());
 }
 
 TEST(GraphTest, GraphFromStrsTest) {
@@ -220,7 +219,7 @@ TEST(GraphTest, GraphFromStrsTest) {
   ASSERT_EQ(graph.EdgesAmount(), 4);
 
   ASSERT_FALSE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsDirect());
+  ASSERT_TRUE(graph.IsDirected());
 
   std::vector<std::string> empty_edges_strs;
   Graph empty_graph = Graph::GraphFromStrs(empty_edges_strs);
@@ -229,7 +228,7 @@ TEST(GraphTest, GraphFromStrsTest) {
   ASSERT_EQ(empty_graph.EdgesAmount(), 0);
 
   ASSERT_FALSE(empty_graph.IsWeighted());
-  ASSERT_TRUE(empty_graph.IsDirect());
+  ASSERT_TRUE(empty_graph.IsDirected());
 
   std::vector<std::string> invalid_edges_strs = {"0-1", "2-1", "3->2", "1>3"};
   ASSERT_THROW(Graph::GraphFromStrs(invalid_edges_strs), std::invalid_argument);

@@ -96,11 +96,12 @@ Graph Graph::GraphFromAdjMatrix(
             "problem].");
 
     for (size_t col = 0; col < adj_matrix[row].size(); col++) {
-      if (adj_matrix[row][col] != 0)
-        if (is_weighted)
-          edges.push_back(Edge(col, row, adj_matrix[col][row]));
-        else
-          edges.push_back(Edge(col, row));
+      if (adj_matrix[row][col] == 0) continue;
+
+      if (is_weighted)
+        edges.push_back(Edge(col, row, adj_matrix[col][row]));
+      else
+        edges.push_back(Edge(col, row));
     }
   }
 
@@ -133,5 +134,5 @@ Graph::Graph(const std::vector<Edge>& edges) : edges_{edges}, verts_() {
   verts_.resize(max_vert + 1);
   std::iota(verts_.begin(), verts_.end(), 0);
 
-  if (!IsDirect()) MakeUndirected();
+  if (!IsDirected()) MakeUndirected();
 }

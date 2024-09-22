@@ -47,7 +47,7 @@ std::ostream& Graph::PrintAdjList(std::ostream& os) const {
 
     for (const auto& neighbor : edges_) {
       if (neighbor.StartVert() == vert) os << neighbor.EndVert() << "; ";
-      if (!IsDirect())
+      if (!IsDirected())
         if (neighbor.EndVert() == vert) os << neighbor.StartVert() << "; ";
     }
 
@@ -57,7 +57,7 @@ std::ostream& Graph::PrintAdjList(std::ostream& os) const {
   return os;
 }
 
-void Graph::MakeUndirected() {
+void Graph::MakeUndirected(bool remove_duplicates) {
   std::unordered_set<size_t> seen_edges;
   std::vector<Edge> unique_edges;
   unique_edges.reserve(EdgesAmount());
@@ -77,6 +77,7 @@ void Graph::MakeUndirected() {
 
   edges_ = std::move(unique_edges);
   is_direct = false;
+  if (remove_duplicates) RemoveDuplicates();
 }
 
 void Graph::RemoveDuplicates() {
@@ -87,6 +88,8 @@ void Graph::RemoveDuplicates() {
     if (!Contains(unique_edges, edge)) unique_edges.push_back(edge);
 
   edges_ = std::move(unique_edges);
+
+  if (!IsDirected()) MakeUndirected();
 }
 
 std::vector<std::vector<size_t>> Graph::GetAdjList() const {
@@ -95,7 +98,7 @@ std::vector<std::vector<size_t>> Graph::GetAdjList() const {
 
   for (const auto& edge : edges_) {
     adj_list[edge.StartVert()].push_back(edge.EndVert());
-    if (!IsDirect()) adj_list[edge.EndVert()].push_back(edge.StartVert());
+    if (!IsDirected()) adj_list[edge.EndVert()].push_back(edge.StartVert());
   }
 
   return adj_list;
@@ -108,7 +111,7 @@ std::vector<std::vector<weight_t>> Graph::GetAdjMatrix() const {
   for (const auto& edge : edges_)
     if (edge.IsWeighted()) {
       adj_matrix[edge.StartVert()][edge.EndVert()] = edge.Weight();
-      if (!IsDirect())
+      if (!IsDirected())
         adj_matrix[edge.EndVert()][edge.StartVert()] = edge.Weight();
     } else {
       adj_matrix[edge.StartVert()][edge.EndVert()] = 1;
@@ -145,7 +148,7 @@ bool Graph::ContainsEdge(
   if (!IsWeighted())
     raise std::logic_error("ContainsEdge: graph is not weighted.");
 
-  if (WeightFromTuple(edge) < 0)
+  if (WeightFromTuple(edge) <= 0)
     raise std::logic_error("ContainsEdge: weight must be greater than zero.");
 
   auto [start_vert, end_vert, weight] = edge;
@@ -241,7 +244,7 @@ void Graph::RemoveEdge(const std::pair<size_t, size_t>& edge_pair) {
       std::remove_if(
           edges_.begin(), edges_.end(),
           [&edge_pair, this](const Edge& e) {
-            if (IsDirect())
+            if (IsDirected())
               return Edge(e.StartVert(), e.EndVert()) == Edge(edge_pair);
 
             return (Edge(e.StartVert(), e.EndVert()) == Edge(edge_pair)) ||
@@ -257,7 +260,7 @@ void Graph::RemoveEdge(const std::tuple<size_t, size_t, weight_t>& edge_tuple) {
 
   edges_.erase(std::remove_if(edges_.begin(), edges_.end(),
                               [&edge_tuple, this](const Edge& e) {
-                                if (IsDirect()) return e == Edge(edge_tuple);
+                                if (IsDirected()) return e == Edge(edge_tuple);
 
                                 return (e == Edge(edge_tuple)) ||
                                        (e == Edge(std::make_tuple(
