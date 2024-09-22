@@ -96,3 +96,9 @@ inline std::istream& operator>>(std::istream& is, std::vector<Type>& vec) {
 
   return is;
 }
+
+template <typename T>
+bool Contains(const std::vector<T>& vec, const T& value) {
+  auto it = std::find(vec.begin(), vec.end(), value);
+  return it != vec.end();
+}
