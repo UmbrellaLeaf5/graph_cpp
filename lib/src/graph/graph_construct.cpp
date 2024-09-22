@@ -2,6 +2,8 @@
 
 Graph Graph::GraphNonWeighted(
     const std::vector<std::pair<size_t, size_t>>& edges_pairs) {
+  if (edges_pairs.empty()) return Graph();
+
   std::vector<Edge> edges{};
   edges.reserve(edges_pairs.size());
 
@@ -15,6 +17,8 @@ Graph Graph::GraphNonWeighted(
 Graph Graph::GraphWeighted(
     const std::vector<std::pair<size_t, size_t>>& edges_pairs,
     const std::vector<weight_t>& weights) {
+  if (edges_pairs.empty() && weights.empty()) return Graph();
+
   std::vector<Edge> edges{};
   edges.reserve(edges_pairs.size());
 
@@ -62,6 +66,8 @@ Graph Graph::GraphFromAdjMatrix(
 
 Graph Graph::GraphFromAdjList(
     const std::vector<std::vector<size_t>>& adj_list) {
+  if (adj_list.empty()) return Graph();
+
   std::vector<Edge> edges{};
 
   for (size_t row = 0; row < adj_list.size(); row++)
@@ -72,6 +78,8 @@ Graph Graph::GraphFromAdjList(
 }
 
 Graph::Graph(const std::vector<Edge>& edges) : edges_{edges}, verts_() {
+  if (edges.empty()) return;
+
   // кол-во вершин = максимальная вершина среди ребер
   size_t max_vert = 0;
   for (const auto& edge : edges_) {

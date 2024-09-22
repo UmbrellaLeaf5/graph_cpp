@@ -6,6 +6,8 @@ std::ostream& operator<<(std::ostream& os, const Graph& graph) {
 }
 
 bool Graph::IsWeighted() const {
+  if (edges_.empty()) return false;
+
   bool is_weighted = true;
   for (const auto& edge : edges_) is_weighted &= edge.IsWeighted();
   return is_weighted;
@@ -24,11 +26,13 @@ std::ostream& Graph::PrintVerts(std::ostream& os) const {
 
 std::ostream& Graph::PrintEdges(std::ostream& os) const {
   os << "{";
-  for (const auto& edge : edges_)
-    if (edge != edges_[EdgesSize() - 1])
+  for (size_t i = 0; i < edges_.size(); i++) {
+    auto edge = edges_[i];
+    if (i != EdgesSize() - 1)
       os << edge << "; ";
     else
       os << edge;
+  }
   os << "}" << std::endl;
   return os;
 }
@@ -45,11 +49,22 @@ void Graph::Disorient() {
       if (edges_[i].StartVert() == edges_[j].EndVert() &&
           edges_[j].StartVert() == edges_[i].EndVert()) {
         seen_edges.insert(j);
-        unique_edges.push_back(edges_[i]);
         break;
       }
+
+    unique_edges.push_back(edges_[i]);
   }
 
   edges_ = std::move(unique_edges);
   is_orient = false;
+}
+
+void Graph::RemoveDuplicates() {
+  std::vector<Edge> unique_edges;
+  unique_edges.reserve(EdgesSize());
+
+  for (const auto& edge : edges_)
+    if (!Contains(unique_edges, edge)) unique_edges.push_back(edge);
+
+  edges_ = std::move(unique_edges);
 }

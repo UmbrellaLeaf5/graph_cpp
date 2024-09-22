@@ -34,6 +34,8 @@ class Graph {
   void Orient() { is_orient = true; }
   bool IsOrient() const { return is_orient; }
 
+  void RemoveDuplicates();
+
  private:
   class Edge {
    public:

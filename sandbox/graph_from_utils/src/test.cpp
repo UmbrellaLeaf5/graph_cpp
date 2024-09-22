@@ -89,3 +89,48 @@ TEST(GraphTest, Disorient) {
   g.Disorient();
   ASSERT_FALSE(g.IsOrient());
 }
+
+TEST(GraphTest, CreateGraphWithEmptyEdges) {
+  std::vector<std::pair<size_t, size_t>> edges;
+  Graph g = Graph::GraphNonWeighted(edges);
+  ASSERT_EQ(g.VertsSize(), 0);
+  ASSERT_EQ(g.EdgesSize(), 0);
+  ASSERT_FALSE(g.IsWeighted());
+  ASSERT_TRUE(g.IsOrient());
+}
+
+TEST(GraphTest, CreateGraphWithDuplicateEdges) {
+  std::vector<std::pair<size_t, size_t>> edges = {
+      {0, 1}, {1, 2}, {0, 1}, {2, 1}, {1, 2}};
+  // для скорости работы по умолчанию дубликаты допускаются
+  Graph g = Graph::GraphNonWeighted(edges);
+  ASSERT_EQ(g.VertsSize(), 3);
+  ASSERT_EQ(g.EdgesSize(), 5);
+  ASSERT_FALSE(g.IsWeighted());
+  ASSERT_TRUE(g.IsOrient());
+
+  g.RemoveDuplicates();
+
+  ASSERT_EQ(g.VertsSize(), 3);
+  ASSERT_EQ(g.EdgesSize(), 3);
+  ASSERT_FALSE(g.IsWeighted());
+  ASSERT_TRUE(g.IsOrient());
+
+  g.Disorient();
+
+  ASSERT_EQ(g.VertsSize(), 3);
+  ASSERT_EQ(g.EdgesSize(), 2);
+  ASSERT_FALSE(g.IsWeighted());
+  ASSERT_FALSE(g.IsOrient());
+}
+
+TEST(GraphTest, CreateGraphWithInvalidWeights) {
+  std::vector<std::pair<size_t, size_t>> edges = {{0, 1}, {1, 2}, {2, 0}};
+  std::vector<long> weights = {1, 2, -1};
+  ASSERT_THROW(Graph::GraphWeighted(edges, weights), std::invalid_argument);
+}
+
+TEST(GraphTest, CreateGraphFromAdjMatrixWithInvalidSize) {
+  std::vector<std::vector<long>> adj_matrix = {{0, 1}, {1, 0, 1}, {1, 0}};
+  ASSERT_THROW(Graph::GraphFromAdjMatrix(adj_matrix), std::invalid_argument);
+}
