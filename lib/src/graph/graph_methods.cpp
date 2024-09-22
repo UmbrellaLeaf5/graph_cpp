@@ -89,7 +89,7 @@ void Graph::RemoveDuplicates() {
   edges_ = std::move(unique_edges);
 }
 
-std::vector<std::vector<size_t>> Graph::ReturnAdjList() const {
+std::vector<std::vector<size_t>> Graph::GetAdjList() const {
   std::vector<std::vector<size_t>> adj_list(
       *std::max_element(Verts().begin(), Verts().end()) + 1);
 
@@ -101,7 +101,7 @@ std::vector<std::vector<size_t>> Graph::ReturnAdjList() const {
   return adj_list;
 }
 
-std::vector<std::vector<weight_t>> Graph::ReturnAdjMatrix() const {
+std::vector<std::vector<weight_t>> Graph::GetAdjMatrix() const {
   std::vector<std::vector<weight_t>> adj_matrix(
       VertsAmount(), std::vector<weight_t>(VertsAmount(), 0));
 
@@ -138,4 +138,53 @@ std::pair<size_t, size_t> Graph::ParseEdgeString(const std::string& edge_str) {
         "(vertices should be numbers): " +
         edge_str);
   }
+}
+
+bool Graph::ContainsEdge(
+    const std::tuple<size_t, size_t, weight_t>& edge) const {
+  if (!IsWeighted())
+    raise std::logic_error("ContainsEdge: graph is not weighted.");
+
+  if (WeightFromTuple(edge) < 0)
+    raise std::logic_error("ContainsEdge: weight must be greater than zero.");
+
+  auto [start_vert, end_vert, weight] = edge;
+
+  auto it = std::find_if(edges_.begin(), edges_.end(),
+                         [start_vert, end_vert, weight](const auto& e) {
+                           return e.StartVert() == start_vert &&
+                                  e.EndVert() == end_vert &&
+                                  e.Weight() == weight;
+                         });
+
+  return it != edges_.end();
+}
+
+bool Graph::ContainsEdge(const std::pair<size_t, size_t>& edge) const {
+  auto [start_vert, end_vert] = edge;
+
+  auto it = std::find_if(
+      edges_.begin(), edges_.end(), [start_vert, end_vert](const auto& e) {
+        return e.StartVert() == start_vert && e.EndVert() == end_vert;
+      });
+
+  return it != edges_.end();
+}
+
+weight_t Graph::GetWeightOfEdge(const std::pair<size_t, size_t>& edge) const {
+  if (!IsWeighted())
+    throw std::logic_error("GetWeightOfEdge: graph is not weighted.");
+
+  if (!ContainsEdge(edge))
+    raise std::invalid_argument("GetWeightOfEdge: there is no edge: " +
+                                Edge(edge).Name());
+
+  auto [start_vert, end_vert] = edge;
+
+  auto it = std::find_if(
+      edges_.begin(), edges_.end(), [start_vert, end_vert](const auto& e) {
+        return e.StartVert() == start_vert && e.EndVert() == end_vert;
+      });
+
+  return it->Weight();
 }

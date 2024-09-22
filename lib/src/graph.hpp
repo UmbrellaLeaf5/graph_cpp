@@ -54,8 +54,13 @@ class Graph {
 
   void RemoveDuplicates();
 
-  std::vector<std::vector<size_t>> ReturnAdjList() const;
-  std::vector<std::vector<weight_t>> ReturnAdjMatrix() const;
+  std::vector<std::vector<size_t>> GetAdjList() const;
+  std::vector<std::vector<weight_t>> GetAdjMatrix() const;
+
+  bool ContainsEdge(const std::tuple<size_t, size_t, weight_t>& edge) const;
+  bool ContainsEdge(const std::pair<size_t, size_t>& edge) const;
+
+  weight_t GetWeightOfEdge(const std::pair<size_t, size_t>& edge) const;
 
  private:
   class Edge {
@@ -66,6 +71,9 @@ class Graph {
         : start_vert_{start_vert}, end_vert_{end_vert} {}
 
     Edge(size_t start_vert, size_t end_vert, weight_t weight);
+
+    Edge(std::pair<size_t, size_t> edge_pair);
+    Edge(std::tuple<size_t, size_t, weight_t> edge_tuple);
 
     bool IsWeighted() const { return weight_ != 0; }
 
@@ -84,12 +92,12 @@ class Graph {
 
     auto operator<=>(const Edge& rhs) const;
 
+    const std::string& Name() const;
+
    private:
     size_t start_vert_;
     size_t end_vert_;
     weight_t weight_ = 0;
-
-    const std::string& Name() const;
   };
 
   std::vector<size_t> verts_;
@@ -108,14 +116,17 @@ class Graph {
 
 std::ostream& operator<<(std::ostream& os, const Graph& graph);
 
-inline size_t StartVert(const std::tuple<size_t, size_t, weight_t>& edge) {
+inline size_t StartVertFromTuple(
+    const std::tuple<size_t, size_t, weight_t>& edge) {
   return std::get<0>(edge);
 }
 
-inline size_t EndVert(const std::tuple<size_t, size_t, weight_t>& edge) {
+inline size_t EndVertFromTuple(
+    const std::tuple<size_t, size_t, weight_t>& edge) {
   return std::get<1>(edge);
 }
 
-inline weight_t Weight(const std::tuple<size_t, size_t, weight_t>& edge) {
+inline weight_t WeightFromTuple(
+    const std::tuple<size_t, size_t, weight_t>& edge) {
   return std::get<2>(edge);
 }
