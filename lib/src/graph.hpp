@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 #include "util.hpp"
 
 class Graph {
@@ -18,6 +20,18 @@ class Graph {
   static Graph GraphFromAdjList(
       const std::vector<std::vector<size_t>>& adj_list);
 
+  bool IsWeighted() const;
+
+  size_t VertsSize() const { return verts_.size(); }
+  size_t EdgesSize() const { return edges_.size(); }
+
+  std::ostream& PrintVerts(std::ostream& os = std::cout) const;
+  std::ostream& PrintEdges(std::ostream& os = std::cout) const;
+
+  void Disorient();
+  void Orient() { is_orient = true; }
+  bool IsOrient() const { return is_orient; }
+
  private:
   class Edge {
    public:
@@ -26,8 +40,7 @@ class Graph {
     Edge(size_t start_vert, size_t end_vert)
         : start_vert_{start_vert}, end_vert_{end_vert} {}
 
-    Edge(size_t start_vert, size_t end_vert, double weight)
-        : start_vert_{start_vert}, end_vert_{end_vert}, weight_{weight} {}
+    Edge(size_t start_vert, size_t end_vert, double weight);
 
     bool IsWeighted() const { return weight_ != 0; }
 
@@ -36,6 +49,15 @@ class Graph {
     double Weight() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Edge& edge);
+
+    bool operator==(const Edge& rhs) const {
+      return start_vert_ == rhs.start_vert_ && end_vert_ == rhs.end_vert_ &&
+             weight_ == rhs.weight_;
+    }
+
+    bool operator!=(const Edge& rhs) const { return !(*this == rhs); }
+
+    auto operator<=>(const Edge& rhs) const;
 
    private:
     size_t start_vert_;
@@ -48,9 +70,13 @@ class Graph {
   std::vector<size_t> verts_;
   std::vector<Edge> edges_;
 
+  bool is_orient = true;
+
  public:
   friend std::ostream& operator<<(std::ostream& os, const Graph::Edge& edge);
 
  private:
   Graph(const std::vector<Edge>& edges);
 };
+
+std::ostream& operator<<(std::ostream& os, const Graph& graph);

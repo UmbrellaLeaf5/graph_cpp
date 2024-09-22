@@ -5,6 +5,17 @@ std::ostream& operator<<(std::ostream& os, const Graph::Edge& edge) {
   return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const Graph& graph) {
+  graph.PrintEdges(os);
+  return os;
+}
+
+Graph::Edge::Edge(size_t start_vert, size_t end_vert, double weight)
+    : start_vert_{start_vert}, end_vert_{end_vert}, weight_{weight} {
+  if (weight <= 0)
+    raise std::invalid_argument("Edge: weight must be greater than zero.");
+}
+
 double Graph::Edge::Weight() const {
   if (!IsWeighted())
     raise std::logic_error("Edge: " + Name() + " is not weighted.");
@@ -12,14 +23,24 @@ double Graph::Edge::Weight() const {
   return weight_;
 }
 
-const std::string& Graph::Edge::Name() const {
-  if (IsWeighted())
-    return "[" + std::to_string(StartVert()) + " -> " +
-           std::to_string(EndVert()) + ", w: " + std::to_string(Weight()) + "]";
+auto Graph::Edge::operator<=>(const Edge& rhs) const {
+  if (!(IsWeighted() && rhs.IsWeighted()))
+    raise std::invalid_argument("Edge: unweighted edges are not comparable.");
 
+  return weight_ <=> rhs.Weight();
+}
+
+const std::string& Graph::Edge::Name() const {
+  static std::string name;
+
+  if (IsWeighted())
+    name = "[" + std::to_string(StartVert()) + " -> " +
+           std::to_string(EndVert()) + ", w: " + std::to_string(Weight()) + "]";
   else
-    return "[" + std::to_string(StartVert()) + " -> " +
+    name = "[" + std::to_string(StartVert()) + " -> " +
            std::to_string(EndVert()) + "]";
+
+  return name;
 }
 
 Graph Graph::GraphNonWeighted(
@@ -40,9 +61,10 @@ Graph Graph::GraphWeighted(
   std::vector<Edge> edges{};
   edges.reserve(edges_pairs.size());
 
-  if (edges.size() != weights.size())
+  if (edges_pairs.size() != weights.size())
     raise std::invalid_argument(
-        "Graph: the sizes of the edges and weights vectors do not match.");
+        "GraphWeighted: the sizes of the edges and weights vectors do not "
+        "match.");
 
   for (size_t i = 0; i < weights.size(); i++) {
     auto edge = Edge(edges_pairs[i].first, edges_pairs[i].second, weights[i]);
@@ -92,6 +114,55 @@ Graph Graph::GraphFromAdjList(
   return Graph(edges);
 }
 
+bool Graph::IsWeighted() const {
+  bool is_weighted = true;
+  for (const auto& edge : edges_) is_weighted &= edge.IsWeighted();
+  return is_weighted;
+}
+
+std::ostream& Graph::PrintVerts(std::ostream& os) const {
+  os << "{";
+  for (const auto& vert : verts_)
+    if (vert != verts_[verts_.size() - 1])
+      os << vert << ", ";
+    else
+      os << vert;
+  os << "}" << std::endl;
+  return os;
+}
+
+std::ostream& Graph::PrintEdges(std::ostream& os) const {
+  os << "{";
+  for (const auto& edge : edges_)
+    if (edge != edges_[EdgesSize() - 1])
+      os << edge << "; ";
+    else
+      os << edge;
+  os << "}" << std::endl;
+  return os;
+}
+
+void Graph::Disorient() {
+  std::unordered_set<size_t> seen_edges;
+  std::vector<Edge> unique_edges;
+  unique_edges.reserve(EdgesSize());
+
+  for (size_t i = 0; i < EdgesSize(); i++) {
+    if (seen_edges.count(i) != 0) continue;
+
+    for (size_t j = i + 1; j < EdgesSize(); j++)
+      if (edges_[i].StartVert() == edges_[j].EndVert() &&
+          edges_[j].StartVert() == edges_[i].EndVert()) {
+        seen_edges.insert(j);
+        unique_edges.push_back(edges_[i]);
+        break;
+      }
+  }
+
+  edges_ = std::move(unique_edges);
+  is_orient = false;
+}
+
 Graph::Graph(const std::vector<Edge>& edges) : edges_{edges}, verts_() {
   // кол-во вершин = максимальная вершина среди ребер
   size_t max_vert = 0;
@@ -102,4 +173,6 @@ Graph::Graph(const std::vector<Edge>& edges) : edges_{edges}, verts_() {
 
   verts_.resize(max_vert + 1);
   std::iota(verts_.begin(), verts_.end(), 0);
+
+  if (!IsOrient()) Disorient();
 }
