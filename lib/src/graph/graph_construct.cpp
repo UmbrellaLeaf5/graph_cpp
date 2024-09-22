@@ -133,5 +133,5 @@ Graph::Graph(const std::vector<Edge>& edges) : edges_{edges}, verts_() {
   verts_.resize(max_vert + 1);
   std::iota(verts_.begin(), verts_.end(), 0);
 
-  if (!IsOrient()) Disorient();
+  if (!IsDirect()) MakeUndirected();
 }

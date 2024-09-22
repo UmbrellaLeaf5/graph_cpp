@@ -47,7 +47,7 @@ std::ostream& Graph::PrintAdjList(std::ostream& os) const {
 
     for (const auto& neighbor : edges_) {
       if (neighbor.StartVert() == vert) os << neighbor.EndVert() << "; ";
-      if (!IsOrient())
+      if (!IsDirect())
         if (neighbor.EndVert() == vert) os << neighbor.StartVert() << "; ";
     }
 
@@ -57,7 +57,7 @@ std::ostream& Graph::PrintAdjList(std::ostream& os) const {
   return os;
 }
 
-void Graph::Disorient() {
+void Graph::MakeUndirected() {
   std::unordered_set<size_t> seen_edges;
   std::vector<Edge> unique_edges;
   unique_edges.reserve(EdgesAmount());
@@ -76,7 +76,7 @@ void Graph::Disorient() {
   }
 
   edges_ = std::move(unique_edges);
-  is_orient = false;
+  is_direct = false;
 }
 
 void Graph::RemoveDuplicates() {
@@ -95,7 +95,7 @@ std::vector<std::vector<size_t>> Graph::GetAdjList() const {
 
   for (const auto& edge : edges_) {
     adj_list[edge.StartVert()].push_back(edge.EndVert());
-    if (!IsOrient()) adj_list[edge.EndVert()].push_back(edge.StartVert());
+    if (!IsDirect()) adj_list[edge.EndVert()].push_back(edge.StartVert());
   }
 
   return adj_list;
@@ -108,7 +108,7 @@ std::vector<std::vector<weight_t>> Graph::GetAdjMatrix() const {
   for (const auto& edge : edges_)
     if (edge.IsWeighted()) {
       adj_matrix[edge.StartVert()][edge.EndVert()] = edge.Weight();
-      if (!IsOrient())
+      if (!IsDirect())
         adj_matrix[edge.EndVert()][edge.StartVert()] = edge.Weight();
     } else {
       adj_matrix[edge.StartVert()][edge.EndVert()] = 1;
@@ -233,28 +233,37 @@ void Graph::RemoveVert(size_t vert) {
 }
 
 void Graph::RemoveEdge(const std::pair<size_t, size_t>& edge_pair) {
-  if (!ContainsEdge(edge_pair)) {
+  if (!ContainsEdge(edge_pair))
     throw std::invalid_argument("RemoveEdge: there is no such edge in graph: " +
                                 Edge(edge_pair).Name());
-  }
 
-  edges_.erase(std::remove_if(edges_.begin(), edges_.end(),
-                              [&edge_pair](const Edge& e) {
-                                return Edge(e.StartVert(), e.EndVert()) ==
-                                       Edge(edge_pair);
-                              }),
-               edges_.end());
+  edges_.erase(
+      std::remove_if(
+          edges_.begin(), edges_.end(),
+          [&edge_pair, this](const Edge& e) {
+            if (IsDirect())
+              return Edge(e.StartVert(), e.EndVert()) == Edge(edge_pair);
+
+            return (Edge(e.StartVert(), e.EndVert()) == Edge(edge_pair)) ||
+                   (Edge(e.EndVert(), e.StartVert()) == Edge(edge_pair));
+          }),
+      edges_.end());
 }
 
 void Graph::RemoveEdge(const std::tuple<size_t, size_t, weight_t>& edge_tuple) {
-  if (!ContainsEdge(edge_tuple)) {
+  if (!ContainsEdge(edge_tuple))
     throw std::invalid_argument("RemoveEdge: there is no such edge in graph: " +
                                 Edge(edge_tuple).Name());
-  }
 
   edges_.erase(std::remove_if(edges_.begin(), edges_.end(),
-                              [&edge_tuple](const Edge& e) {
-                                return e == Edge(edge_tuple);
+                              [&edge_tuple, this](const Edge& e) {
+                                if (IsDirect()) return e == Edge(edge_tuple);
+
+                                return (e == Edge(edge_tuple)) ||
+                                       (e == Edge(std::make_tuple(
+                                                 EndVertFromTuple(edge_tuple),
+                                                 StartVertFromTuple(edge_tuple),
+                                                 WeightFromTuple(edge_tuple))));
                               }),
                edges_.end());
 }

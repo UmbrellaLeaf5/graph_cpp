@@ -48,9 +48,9 @@ class Graph {
   std::ostream& PrintEdges(std::ostream& os = std::cout) const;
   std::ostream& PrintAdjList(std::ostream& os = std::cout) const;
 
-  void Disorient();
-  void Orient() { is_orient = true; }
-  bool IsOrient() const { return is_orient; }
+  void MakeUndirected();
+  void Direct() { is_direct = true; }
+  bool IsDirect() const { return is_direct; }
 
   void RemoveDuplicates();
 
@@ -111,7 +111,7 @@ class Graph {
   std::vector<size_t> verts_;
   std::vector<Edge> edges_;
 
-  bool is_orient = true;
+  bool is_direct = true;
 
  public:
   friend std::ostream& operator<<(std::ostream& os, const Graph::Edge& edge);

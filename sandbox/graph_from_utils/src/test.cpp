@@ -10,7 +10,7 @@ TEST(GraphTest, CreateNonWeightedGraph) {
   ASSERT_EQ(graph.EdgesAmount(), 3);
 
   ASSERT_FALSE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsOrient());
+  ASSERT_TRUE(graph.IsDirect());
 }
 
 TEST(GraphTest, CreateWeightedGraph) {
@@ -22,7 +22,7 @@ TEST(GraphTest, CreateWeightedGraph) {
   ASSERT_EQ(graph.EdgesAmount(), 3);
 
   ASSERT_TRUE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsOrient());
+  ASSERT_TRUE(graph.IsDirect());
 }
 
 TEST(GraphTest, CreateGraphFromAdjacencyMatrix) {
@@ -32,7 +32,7 @@ TEST(GraphTest, CreateGraphFromAdjacencyMatrix) {
   // std::cout << graph.GetAdjMatrix() << std::endl;
   // std::cout << graph.GetAdjList() << std::endl;
 
-  graph.Disorient();
+  graph.MakeUndirected();
 
   ASSERT_EQ(graph.VertsAmount(), 3);
   ASSERT_EQ(graph.EdgesAmount(), 2);
@@ -64,7 +64,7 @@ TEST(GraphTest, CreateWeightedGraphFromAdjacencyMatrix) {
   // graph.PrintAdjList();
   // std::cout << graph << std::endl;
 
-  graph.Disorient();
+  graph.MakeUndirected();
 
   ASSERT_EQ(graph.VertsAmount(), 3);
   ASSERT_EQ(graph.EdgesAmount(), 2);
@@ -96,27 +96,27 @@ TEST(GraphTest, CreateGraphFromAdjacencyList) {
   // std::cout << graph.GetAdjMatrix() << std::endl;
   // std::cout << graph.GetAdjList() << std::endl;
 
-  graph.Disorient();
+  graph.MakeUndirected();
 
   ASSERT_EQ(graph.VertsAmount(), 3);
   ASSERT_EQ(graph.EdgesAmount(), 2);
 
   ASSERT_FALSE(graph.IsWeighted());
 
-  graph.Orient();
-  ASSERT_TRUE(graph.IsOrient());
+  graph.Direct();
+  ASSERT_TRUE(graph.IsDirect());
 
   // std::cout << graph.GetAdjMatrix() << std::endl;
   // std::cout << graph.GetAdjList() << std::endl;
 }
 
-TEST(GraphTest, Disorient) {
+TEST(GraphTest, MakeUndirected) {
   std::vector<std::pair<size_t, size_t>> edges = {{0, 1}, {1, 2}, {2, 0}};
   Graph g = Graph::GraphNonWeighted(edges);
 
-  ASSERT_TRUE(g.IsOrient());
-  g.Disorient();
-  ASSERT_FALSE(g.IsOrient());
+  ASSERT_TRUE(g.IsDirect());
+  g.MakeUndirected();
+  ASSERT_FALSE(g.IsDirect());
 }
 
 TEST(GraphTest, CreateGraphWithEmptyEdges) {
@@ -126,7 +126,7 @@ TEST(GraphTest, CreateGraphWithEmptyEdges) {
   ASSERT_EQ(g.VertsAmount(), 0);
   ASSERT_EQ(g.EdgesAmount(), 0);
   ASSERT_FALSE(g.IsWeighted());
-  ASSERT_TRUE(g.IsOrient());
+  ASSERT_TRUE(g.IsDirect());
 }
 
 TEST(GraphTest, CreateGraphWithDuplicateEdges) {
@@ -138,21 +138,21 @@ TEST(GraphTest, CreateGraphWithDuplicateEdges) {
   ASSERT_EQ(g.VertsAmount(), 3);
   ASSERT_EQ(g.EdgesAmount(), 5);
   ASSERT_FALSE(g.IsWeighted());
-  ASSERT_TRUE(g.IsOrient());
+  ASSERT_TRUE(g.IsDirect());
 
   g.RemoveDuplicates();
 
   ASSERT_EQ(g.VertsAmount(), 3);
   ASSERT_EQ(g.EdgesAmount(), 3);
   ASSERT_FALSE(g.IsWeighted());
-  ASSERT_TRUE(g.IsOrient());
+  ASSERT_TRUE(g.IsDirect());
 
-  g.Disorient();
+  g.MakeUndirected();
 
   ASSERT_EQ(g.VertsAmount(), 3);
   ASSERT_EQ(g.EdgesAmount(), 2);
   ASSERT_FALSE(g.IsWeighted());
-  ASSERT_FALSE(g.IsOrient());
+  ASSERT_FALSE(g.IsDirect());
 }
 
 TEST(GraphTest, CreateGraphWithInvalidWeights) {
@@ -181,7 +181,7 @@ TEST(GraphTest, GraphFromMapTest) {
   ASSERT_EQ(graph.EdgesAmount(), 4);
 
   ASSERT_TRUE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsOrient());
+  ASSERT_TRUE(graph.IsDirect());
 
   std::unordered_map<std::string, weight_t> empty_edges_dict;
   Graph empty_graph = Graph::GraphFromMap(empty_edges_dict);
@@ -190,7 +190,7 @@ TEST(GraphTest, GraphFromMapTest) {
   ASSERT_EQ(empty_graph.EdgesAmount(), 0);
 
   ASSERT_FALSE(empty_graph.IsWeighted());
-  ASSERT_TRUE(empty_graph.IsOrient());
+  ASSERT_TRUE(empty_graph.IsDirect());
 
   std::unordered_map<std::string, weight_t> invalid_edges_dict = {
       {"0-1", 0}, {"2-1", 1}, {"3->2", 2}, {"1>3", 3}};
@@ -209,7 +209,7 @@ TEST(GraphTest, GraphFromMapTest) {
   ASSERT_EQ(graph.EdgesAmount(), 4);
 
   ASSERT_TRUE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsOrient());
+  ASSERT_TRUE(graph.IsDirect());
 }
 
 TEST(GraphTest, GraphFromStrsTest) {
@@ -220,7 +220,7 @@ TEST(GraphTest, GraphFromStrsTest) {
   ASSERT_EQ(graph.EdgesAmount(), 4);
 
   ASSERT_FALSE(graph.IsWeighted());
-  ASSERT_TRUE(graph.IsOrient());
+  ASSERT_TRUE(graph.IsDirect());
 
   std::vector<std::string> empty_edges_strs;
   Graph empty_graph = Graph::GraphFromStrs(empty_edges_strs);
@@ -229,7 +229,7 @@ TEST(GraphTest, GraphFromStrsTest) {
   ASSERT_EQ(empty_graph.EdgesAmount(), 0);
 
   ASSERT_FALSE(empty_graph.IsWeighted());
-  ASSERT_TRUE(empty_graph.IsOrient());
+  ASSERT_TRUE(empty_graph.IsDirect());
 
   std::vector<std::string> invalid_edges_strs = {"0-1", "2-1", "3->2", "1>3"};
   ASSERT_THROW(Graph::GraphFromStrs(invalid_edges_strs), std::invalid_argument);
@@ -457,13 +457,13 @@ TEST(GraphTest, RemoveEdgeByPair) {
   g.AddEdge(1, 2, 5);
   g.AddEdge(2, 3, 7);
 
-  std::cout << g << std::endl;
+  // std::cout << g << std::endl;
 
   ASSERT_NO_THROW(g.RemoveEdge({1, 2}));
   EXPECT_FALSE(g.ContainsEdge({1, 2}));
   EXPECT_TRUE(g.ContainsEdge({2, 3}));
 
-  std::cout << g << std::endl;
+  // std::cout << g << std::endl;
 
   ASSERT_THROW(g.RemoveEdge({1, 3}), std::invalid_argument);
 }
@@ -536,4 +536,55 @@ TEST(GraphTest, ContainsAndGetVerts) {
   EXPECT_TRUE(std::find(verts.begin(), verts.end(), 1) != verts.end());
   EXPECT_TRUE(std::find(verts.begin(), verts.end(), 2) != verts.end());
   EXPECT_TRUE(std::find(verts.begin(), verts.end(), 3) != verts.end());
+}
+
+TEST(GraphTest, RemoveEdgeFromDirectedGraph) {
+  Graph graph_directed{};
+  graph_directed.AddVert(0);
+  graph_directed.AddVert(1);
+  graph_directed.AddVert(2);
+  graph_directed.AddEdge(0, 1, 1);
+  graph_directed.AddEdge(1, 2, 2);
+
+  ASSERT_NO_THROW(graph_directed.RemoveEdge({0, 1}));
+  ASSERT_FALSE(graph_directed.ContainsEdge({0, 1}));
+  ASSERT_TRUE(graph_directed.ContainsEdge({1, 2}));
+}
+
+TEST(GraphTest, RemoveEdgeFromUndirectedGraph) {
+  Graph graph_undirected{};
+  graph_undirected.AddVert(0);
+  graph_undirected.AddVert(1);
+  graph_undirected.AddVert(2);
+  graph_undirected.AddEdge(0, 1, 1);
+  graph_undirected.AddEdge(1, 2, 2);
+
+  graph_undirected.MakeUndirected();
+
+  ASSERT_NO_THROW(graph_undirected.RemoveEdge({0, 1}));
+  ASSERT_FALSE(graph_undirected.ContainsEdge({0, 1}));
+  ASSERT_FALSE(graph_undirected.ContainsEdge({1, 0}));
+  ASSERT_TRUE(graph_undirected.ContainsEdge({1, 2}));
+}
+
+TEST(GraphTest, RemoveNonExistentEdgeThrowsException) {
+  Graph graph_directed{};
+  graph_directed.AddVert(0);
+  graph_directed.AddVert(1);
+  graph_directed.AddVert(2);
+  graph_directed.AddEdge(0, 1, 1);
+  graph_directed.AddEdge(1, 2, 2);
+
+  ASSERT_THROW(graph_directed.RemoveEdge({0, 2}), std::invalid_argument);
+
+  Graph graph_undirected{};
+  graph_undirected.AddVert(0);
+  graph_undirected.AddVert(1);
+  graph_undirected.AddVert(2);
+  graph_undirected.AddEdge(0, 1, 1);
+  graph_undirected.AddEdge(1, 2, 2);
+
+  graph_undirected.MakeUndirected();
+
+  ASSERT_THROW(graph_undirected.RemoveEdge({0, 2}), std::invalid_argument);
 }
