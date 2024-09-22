@@ -1,4 +1,10 @@
+#pragma once
+
+// std libs:
+#include <numeric>
+#include <unordered_map>
 #include <unordered_set>
+#include <variant>
 
 #include "util.hpp"
 
@@ -15,6 +21,11 @@ class Graph {
       const std::vector<std::pair<size_t, size_t>>& edges_pairs,
       const std::vector<weight_t>& weights);
 
+  static Graph GraphFromMap(
+      const std::unordered_map<std::string, weight_t>& edges_dict);
+
+  static Graph GraphFromStrs(const std::vector<std::string>& edges_strs);
+
   static Graph GraphFromAdjMatrix(
       const std::vector<std::vector<weight_t>>& adj_matrix,
       bool is_weighted = false);
@@ -24,8 +35,10 @@ class Graph {
 
   bool IsWeighted() const;
 
-  size_t VertsSize() const { return verts_.size(); }
-  size_t EdgesSize() const { return edges_.size(); }
+  size_t VertsAmount() const { return verts_.size(); }
+  size_t EdgesAmount() const { return edges_.size(); }
+
+  const std::vector<size_t>& Verts() const { return verts_; }
 
   std::ostream& PrintVerts(std::ostream& os = std::cout) const;
   std::ostream& PrintEdges(std::ostream& os = std::cout) const;
@@ -81,6 +94,8 @@ class Graph {
 
  private:
   Graph(const std::vector<Edge>& edges);
+
+  static std::pair<size_t, size_t> ParseEdgeString(const std::string& edge_str);
 };
 
 std::ostream& operator<<(std::ostream& os, const Graph& graph);

@@ -35,6 +35,37 @@ Graph Graph::GraphWeighted(
   return Graph(edges);
 }
 
+Graph Graph::GraphFromMap(
+    const std::unordered_map<std::string, weight_t>& edges_dict) {
+  if (edges_dict.empty()) return Graph();
+
+  std::vector<Graph::Edge> edges;
+
+  for (const auto& [edge_str, weight] : edges_dict) {
+    size_t start_vert, end_vert;
+    std::tie(start_vert, end_vert) = ParseEdgeString(edge_str);
+
+    edges.emplace_back(start_vert, end_vert, weight);
+  }
+
+  return Graph(edges);
+}
+
+Graph Graph::GraphFromStrs(const std::vector<std::string>& edges_strs) {
+  if (edges_strs.empty()) return Graph();
+
+  std::vector<Graph::Edge> edges;
+
+  for (const auto& edge_str : edges_strs) {
+    size_t start_vert, end_vert;
+    std::tie(start_vert, end_vert) = ParseEdgeString(edge_str);
+
+    edges.emplace_back(start_vert, end_vert);
+  }
+
+  return Graph(edges);
+}
+
 Graph Graph::GraphFromAdjMatrix(
     const std::vector<std::vector<weight_t>>& adj_matrix, bool is_weighted) {
   std::vector<Edge> edges{};

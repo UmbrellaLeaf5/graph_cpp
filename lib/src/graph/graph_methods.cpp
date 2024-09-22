@@ -1,7 +1,13 @@
 #include "../graph.hpp"
 
 std::ostream& operator<<(std::ostream& os, const Graph& graph) {
+  os << "Edges:\n     ";
   graph.PrintEdges(os);
+
+  os << "\n";
+
+  os << "Vertices:\n     ";
+  graph.PrintVerts(os);
   return os;
 }
 
@@ -14,38 +20,24 @@ bool Graph::IsWeighted() const {
 }
 
 std::ostream& Graph::PrintVerts(std::ostream& os) const {
-  os << "{";
-  for (const auto& vert : verts_)
-    if (vert != verts_[verts_.size() - 1])
-      os << vert << ", ";
-    else
-      os << vert;
-  os << "}" << std::endl;
+  os << Verts();
   return os;
 }
 
 std::ostream& Graph::PrintEdges(std::ostream& os) const {
-  os << "{";
-  for (size_t i = 0; i < edges_.size(); i++) {
-    auto edge = edges_[i];
-    if (i != EdgesSize() - 1)
-      os << edge << "; ";
-    else
-      os << edge;
-  }
-  os << "}" << std::endl;
+  os << edges_;
   return os;
 }
 
 void Graph::Disorient() {
   std::unordered_set<size_t> seen_edges;
   std::vector<Edge> unique_edges;
-  unique_edges.reserve(EdgesSize());
+  unique_edges.reserve(EdgesAmount());
 
-  for (size_t i = 0; i < EdgesSize(); i++) {
+  for (size_t i = 0; i < EdgesAmount(); i++) {
     if (seen_edges.count(i) != 0) continue;
 
-    for (size_t j = i + 1; j < EdgesSize(); j++)
+    for (size_t j = i + 1; j < EdgesAmount(); j++)
       if (edges_[i].StartVert() == edges_[j].EndVert() &&
           edges_[j].StartVert() == edges_[i].EndVert()) {
         seen_edges.insert(j);
@@ -61,10 +53,22 @@ void Graph::Disorient() {
 
 void Graph::RemoveDuplicates() {
   std::vector<Edge> unique_edges;
-  unique_edges.reserve(EdgesSize());
+  unique_edges.reserve(EdgesAmount());
 
   for (const auto& edge : edges_)
     if (!Contains(unique_edges, edge)) unique_edges.push_back(edge);
 
   edges_ = std::move(unique_edges);
+}
+
+std::pair<size_t, size_t> Graph::ParseEdgeString(const std::string& edge_str) {
+  size_t pos = edge_str.find("->");
+
+  if (pos == std::string::npos)
+    throw std::invalid_argument("EdgeString: Invalid edge string format: " +
+                                edge_str);
+
+  size_t start_vert = std::stoul(edge_str.substr(0, pos));
+  size_t end_vert = std::stoul(edge_str.substr(pos + 2));
+  return {start_vert, end_vert};
 }

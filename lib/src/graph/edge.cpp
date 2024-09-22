@@ -29,10 +29,10 @@ const std::string& Graph::Edge::Name() const {
   static std::string name;
 
   if (IsWeighted())
-    name = "[" + std::to_string(StartVert()) + " -> " +
+    name = "[" + std::to_string(StartVert()) + "->" +
            std::to_string(EndVert()) + ", w: " + std::to_string(Weight()) + "]";
   else
-    name = "[" + std::to_string(StartVert()) + " -> " +
+    name = "[" + std::to_string(StartVert()) + "->" +
            std::to_string(EndVert()) + "]";
 
   return name;

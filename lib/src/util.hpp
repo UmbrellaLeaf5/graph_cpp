@@ -3,7 +3,6 @@
 // std libs:
 #include <algorithm>
 #include <iostream>
-#include <numeric>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -28,12 +27,12 @@ using std::size_t;
 template <typename Type>
 inline std::ostream& operator<<(std::ostream& os,
                                 const std::vector<Type>& vec) {
-  os << "[";
+  os << "{";
   for (std::size_t i = 0; i < vec.size(); i++) {
-    os << "'" << vec[i] << "'";
-    if (i != vec.size() - 1) os << ", ";
+    os << vec[i];
+    if (i != vec.size() - 1) os << "; ";
   }
-  return os << "]";
+  return os << "}";
 }
 
 /**
