@@ -2,6 +2,8 @@
 
 #include "util.hpp"
 
+using weight_t = long;
+
 class Graph {
  public:
   Graph() : verts_(), edges_() {}
@@ -11,10 +13,10 @@ class Graph {
 
   static Graph GraphWeighted(
       const std::vector<std::pair<size_t, size_t>>& edges_pairs,
-      const std::vector<double>& weights);
+      const std::vector<weight_t>& weights);
 
   static Graph GraphFromAdjMatrix(
-      const std::vector<std::vector<double>>& adj_matrix,
+      const std::vector<std::vector<weight_t>>& adj_matrix,
       bool is_weighted = false);
 
   static Graph GraphFromAdjList(
@@ -40,13 +42,13 @@ class Graph {
     Edge(size_t start_vert, size_t end_vert)
         : start_vert_{start_vert}, end_vert_{end_vert} {}
 
-    Edge(size_t start_vert, size_t end_vert, double weight);
+    Edge(size_t start_vert, size_t end_vert, weight_t weight);
 
     bool IsWeighted() const { return weight_ != 0; }
 
     size_t StartVert() const { return start_vert_; }
     size_t EndVert() const { return end_vert_; }
-    double Weight() const;
+    weight_t Weight() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Edge& edge);
 
@@ -62,7 +64,7 @@ class Graph {
    private:
     size_t start_vert_;
     size_t end_vert_;
-    double weight_ = 0;
+    weight_t weight_ = 0;
 
     const std::string& Name() const;
   };

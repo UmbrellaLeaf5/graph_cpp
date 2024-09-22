@@ -14,7 +14,7 @@ Graph Graph::GraphNonWeighted(
 
 Graph Graph::GraphWeighted(
     const std::vector<std::pair<size_t, size_t>>& edges_pairs,
-    const std::vector<double>& weights) {
+    const std::vector<weight_t>& weights) {
   std::vector<Edge> edges{};
   edges.reserve(edges_pairs.size());
 
@@ -32,7 +32,7 @@ Graph Graph::GraphWeighted(
 }
 
 Graph Graph::GraphFromAdjMatrix(
-    const std::vector<std::vector<double>>& adj_matrix, bool is_weighted) {
+    const std::vector<std::vector<weight_t>>& adj_matrix, bool is_weighted) {
   std::vector<Edge> edges{};
 
   if (adj_matrix.empty()) return Graph();

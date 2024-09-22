@@ -5,13 +5,13 @@ std::ostream& operator<<(std::ostream& os, const Graph::Edge& edge) {
   return os;
 }
 
-Graph::Edge::Edge(size_t start_vert, size_t end_vert, double weight)
+Graph::Edge::Edge(size_t start_vert, size_t end_vert, weight_t weight)
     : start_vert_{start_vert}, end_vert_{end_vert}, weight_{weight} {
   if (weight <= 0)
     raise std::invalid_argument("Edge: weight must be greater than zero.");
 }
 
-double Graph::Edge::Weight() const {
+weight_t Graph::Edge::Weight() const {
   if (!IsWeighted())
     raise std::logic_error("Edge: " + Name() + " is not weighted.");
 
