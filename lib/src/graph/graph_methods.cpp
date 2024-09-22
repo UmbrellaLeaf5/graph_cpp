@@ -19,7 +19,7 @@ bool Graph::IsWeighted() const {
   return is_weighted;
 }
 
-std::vector<std::tuple<size_t, size_t, weight_t>> Graph::Edges() {
+std::vector<std::tuple<size_t, size_t, weight_t>> Graph::Edges() const {
   if (edges_.empty()) return {};
 
   std::vector<std::tuple<size_t, size_t, weight_t>> edges_tuples(edges_.size());
@@ -38,6 +38,22 @@ std::ostream& Graph::PrintVerts(std::ostream& os) const {
 
 std::ostream& Graph::PrintEdges(std::ostream& os) const {
   os << edges_;
+  return os;
+}
+
+std::ostream& Graph::PrintAdjList(std::ostream& os) const {
+  for (const auto& vert : Verts()) {
+    os << vert << ": ";
+
+    for (const auto& neighbor : edges_) {
+      if (neighbor.StartVert() == vert) os << neighbor.EndVert() << "; ";
+      if (!IsOrient())
+        if (neighbor.EndVert() == vert) os << neighbor.StartVert() << "; ";
+    }
+
+    os << "\n";
+  }
+
   return os;
 }
 
@@ -71,6 +87,35 @@ void Graph::RemoveDuplicates() {
     if (!Contains(unique_edges, edge)) unique_edges.push_back(edge);
 
   edges_ = std::move(unique_edges);
+}
+
+std::vector<std::vector<size_t>> Graph::ReturnAdjList() const {
+  std::vector<std::vector<size_t>> adj_list(
+      *std::max_element(Verts().begin(), Verts().end()) + 1);
+
+  for (const auto& edge : edges_) {
+    adj_list[edge.StartVert()].push_back(edge.EndVert());
+    if (!IsOrient()) adj_list[edge.EndVert()].push_back(edge.StartVert());
+  }
+
+  return adj_list;
+}
+
+std::vector<std::vector<weight_t>> Graph::ReturnAdjMatrix() const {
+  std::vector<std::vector<weight_t>> adj_matrix(
+      VertsAmount(), std::vector<weight_t>(VertsAmount(), 0));
+
+  for (const auto& edge : edges_)
+    if (edge.IsWeighted()) {
+      adj_matrix[edge.StartVert()][edge.EndVert()] = edge.Weight();
+      if (!IsOrient())
+        adj_matrix[edge.EndVert()][edge.StartVert()] = edge.Weight();
+    } else {
+      adj_matrix[edge.StartVert()][edge.EndVert()] = 1;
+      adj_matrix[edge.EndVert()][edge.StartVert()] = 1;
+    }
+
+  return adj_matrix;
 }
 
 std::pair<size_t, size_t> Graph::ParseEdgeString(const std::string& edge_str) {

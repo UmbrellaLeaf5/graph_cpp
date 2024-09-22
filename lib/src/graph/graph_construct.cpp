@@ -98,7 +98,7 @@ Graph Graph::GraphFromAdjMatrix(
     for (size_t col = 0; col < adj_matrix[row].size(); col++) {
       if (adj_matrix[row][col] != 0)
         if (is_weighted)
-          edges.push_back(Edge(col, row, adj_matrix[row][col]));
+          edges.push_back(Edge(col, row, adj_matrix[col][row]));
         else
           edges.push_back(Edge(col, row));
     }

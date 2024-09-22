@@ -42,16 +42,20 @@ class Graph {
   size_t EdgesAmount() const { return edges_.size(); }
 
   const std::vector<size_t>& Verts() const { return verts_; }
-  std::vector<std::tuple<size_t, size_t, weight_t>> Edges();
+  std::vector<std::tuple<size_t, size_t, weight_t>> Edges() const;
 
   std::ostream& PrintVerts(std::ostream& os = std::cout) const;
   std::ostream& PrintEdges(std::ostream& os = std::cout) const;
+  std::ostream& PrintAdjList(std::ostream& os = std::cout) const;
 
   void Disorient();
   void Orient() { is_orient = true; }
   bool IsOrient() const { return is_orient; }
 
   void RemoveDuplicates();
+
+  std::vector<std::vector<size_t>> ReturnAdjList() const;
+  std::vector<std::vector<weight_t>> ReturnAdjMatrix() const;
 
  private:
   class Edge {

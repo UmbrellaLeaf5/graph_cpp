@@ -28,12 +28,19 @@ TEST(GraphTest, CreateWeightedGraph) {
 TEST(GraphTest, CreateGraphFromAdjacencyMatrix) {
   std::vector<std::vector<long>> adj_matrix = {{0, 1, 0}, {1, 0, 1}, {0, 1, 0}};
   Graph graph = Graph::GraphFromAdjMatrix(adj_matrix);
+
+  // std::cout << graph.ReturnAdjMatrix() << std::endl;
+  // std::cout << graph.ReturnAdjList() << std::endl;
+
   graph.Disorient();
 
   ASSERT_EQ(graph.VertsAmount(), 3);
   ASSERT_EQ(graph.EdgesAmount(), 2);
 
   ASSERT_FALSE(graph.IsWeighted());
+
+  // std::cout << graph.ReturnAdjMatrix() << std::endl;
+  // std::cout << graph.ReturnAdjList() << std::endl;
 }
 
 TEST(GraphTest, CreateGraphFromAdjacencyMatrix2) {
@@ -44,17 +51,29 @@ TEST(GraphTest, CreateGraphFromAdjacencyMatrix2) {
   ASSERT_EQ(graph.EdgesAmount(), 4);
 
   ASSERT_FALSE(graph.IsWeighted());
+
+  // std::cout << graph.ReturnAdjMatrix() << std::endl;
+  // std::cout << graph.ReturnAdjList() << std::endl;
 }
 
 TEST(GraphTest, CreateWeightedGraphFromAdjacencyMatrix) {
   std::vector<std::vector<long>> adj_matrix = {{0, 1, 0}, {1, 0, 5}, {0, 7, 0}};
   Graph graph = Graph::GraphFromAdjMatrix(adj_matrix, true);
+
+  // std::cout << graph.ReturnAdjMatrix() << std::endl;
+  // graph.PrintAdjList();
+  // std::cout << graph << std::endl;
+
   graph.Disorient();
 
   ASSERT_EQ(graph.VertsAmount(), 3);
   ASSERT_EQ(graph.EdgesAmount(), 2);
 
   ASSERT_TRUE(graph.IsWeighted());
+
+  // std::cout << graph.ReturnAdjMatrix() << std::endl;
+  // graph.PrintAdjList();
+  // std::cout << graph << std::endl;
 }
 
 TEST(GraphTest, CreateWeightedGraphFromAdjacencyMatrix2) {
@@ -65,11 +84,18 @@ TEST(GraphTest, CreateWeightedGraphFromAdjacencyMatrix2) {
   ASSERT_EQ(graph.EdgesAmount(), 4);
 
   ASSERT_TRUE(graph.IsWeighted());
+
+  // std::cout << graph.ReturnAdjMatrix() << std::endl;
+  // std::cout << graph.ReturnAdjList() << std::endl;
 }
 
 TEST(GraphTest, CreateGraphFromAdjacencyList) {
   std::vector<std::vector<size_t>> adj_list = {{1}, {0, 2}, {1}};
   Graph graph = Graph::GraphFromAdjList(adj_list);
+
+  // std::cout << graph.ReturnAdjMatrix() << std::endl;
+  // std::cout << graph.ReturnAdjList() << std::endl;
+
   graph.Disorient();
 
   ASSERT_EQ(graph.VertsAmount(), 3);
@@ -79,6 +105,9 @@ TEST(GraphTest, CreateGraphFromAdjacencyList) {
 
   graph.Orient();
   ASSERT_TRUE(graph.IsOrient());
+
+  // std::cout << graph.ReturnAdjMatrix() << std::endl;
+  // std::cout << graph.ReturnAdjList() << std::endl;
 }
 
 TEST(GraphTest, Disorient) {
@@ -93,6 +122,7 @@ TEST(GraphTest, Disorient) {
 TEST(GraphTest, CreateGraphWithEmptyEdges) {
   std::vector<std::pair<size_t, size_t>> edges;
   Graph g = Graph::GraphNonWeighted(edges);
+
   ASSERT_EQ(g.VertsAmount(), 0);
   ASSERT_EQ(g.EdgesAmount(), 0);
   ASSERT_FALSE(g.IsWeighted());
@@ -104,6 +134,7 @@ TEST(GraphTest, CreateGraphWithDuplicateEdges) {
       {0, 1}, {1, 2}, {0, 1}, {2, 1}, {1, 2}};
   // для скорости работы по умолчанию дубликаты допускаются
   Graph g = Graph::GraphNonWeighted(edges);
+
   ASSERT_EQ(g.VertsAmount(), 3);
   ASSERT_EQ(g.EdgesAmount(), 5);
   ASSERT_FALSE(g.IsWeighted());
@@ -127,11 +158,13 @@ TEST(GraphTest, CreateGraphWithDuplicateEdges) {
 TEST(GraphTest, CreateGraphWithInvalidWeights) {
   std::vector<std::pair<size_t, size_t>> edges = {{0, 1}, {1, 2}, {2, 0}};
   std::vector<long> weights = {1, 2, -1};
+
   ASSERT_THROW(Graph::GraphWeighted(edges, weights), std::invalid_argument);
 }
 
 TEST(GraphTest, CreateGraphFromAdjMatrixWithInvalidSize) {
   std::vector<std::vector<long>> adj_matrix = {{0, 1}, {1, 0, 1}, {1, 0}};
+
   ASSERT_THROW(Graph::GraphFromAdjMatrix(adj_matrix), std::invalid_argument);
 }
 
@@ -140,6 +173,9 @@ TEST(GraphTest, GraphFromMapTest) {
       {"0->1", 5}, {"2->1", 1}, {"3->2", 2}, {"1->3", 3}};
 
   Graph graph = Graph::GraphFromMap(edges_dict);
+
+  // graph.PrintAdjList();
+  // std::cout << graph.ReturnAdjList() << std::endl;
 
   ASSERT_EQ(graph.VertsAmount(), 4);
   ASSERT_EQ(graph.EdgesAmount(), 4);
@@ -165,10 +201,12 @@ TEST(GraphTest, GraphFromMapTest) {
 
   graph = Graph::GraphFromMap(edges_dict);
 
+  // graph.PrintAdjList();
+  // std::cout << graph.ReturnAdjList() << std::endl;
+  // std::cout << graph << std::endl;
+
   ASSERT_EQ(graph.VertsAmount(), 26);
   ASSERT_EQ(graph.EdgesAmount(), 4);
-
-  // std::cout << graph << std::endl;
 
   ASSERT_TRUE(graph.IsWeighted());
   ASSERT_TRUE(graph.IsOrient());
@@ -203,6 +241,7 @@ TEST(GraphTest, GraphFromStrsTest) {
 TEST(GraphTest, GraphWeighted_EmptyInput) {
   std::vector<std::tuple<size_t, size_t, weight_t>> empty_input;
   Graph graph = Graph::GraphWeighted(empty_input);
+
   ASSERT_EQ(graph.VertsAmount(), 0);
   ASSERT_EQ(graph.EdgesAmount(), 0);
 }
@@ -210,6 +249,7 @@ TEST(GraphTest, GraphWeighted_EmptyInput) {
 TEST(GraphTest, GraphWeighted_SingleEdge) {
   std::vector<std::tuple<size_t, size_t, weight_t>> input = {{0, 1, 5}};
   Graph graph = Graph::GraphWeighted(input);
+
   ASSERT_EQ(graph.VertsAmount(), 2);
   ASSERT_EQ(graph.EdgesAmount(), 1);
   ASSERT_TRUE(graph.IsWeighted());
@@ -219,6 +259,7 @@ TEST(GraphTest, GraphWeighted_MultipleEdges) {
   std::vector<std::tuple<size_t, size_t, weight_t>> input = {
       {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
   Graph graph = Graph::GraphWeighted(input);
+
   ASSERT_EQ(graph.VertsAmount(), 3);
   ASSERT_EQ(graph.EdgesAmount(), 3);
   ASSERT_TRUE(graph.IsWeighted());
@@ -228,6 +269,7 @@ TEST(GraphTest, Edges_EmptyGraph) {
   std::vector<std::tuple<size_t, size_t, weight_t>> empty_input;
   Graph graph = Graph::GraphWeighted(empty_input);
   auto edges = graph.Edges();
+
   ASSERT_TRUE(edges.empty());
 }
 
@@ -235,6 +277,7 @@ TEST(GraphTest, Edges_SingleEdge) {
   std::vector<std::tuple<size_t, size_t, weight_t>> input = {{0, 1, 5}};
   Graph graph = Graph::GraphWeighted(input);
   auto edges = graph.Edges();
+
   ASSERT_EQ(edges.size(), 1);
   ASSERT_EQ(StartVert(edges[0]), 0);
   ASSERT_EQ(EndVert(edges[0]), 1);
@@ -246,6 +289,7 @@ TEST(GraphTest, Edges_MultipleEdges) {
       {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
   Graph graph = Graph::GraphWeighted(input);
   auto edges = graph.Edges();
+
   ASSERT_EQ(edges.size(), 3);
 
   ASSERT_EQ(StartVert(edges[0]), 0);
@@ -266,6 +310,7 @@ TEST(GraphTest, Edges_ConstAccess) {
       {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
   Graph graph = Graph::GraphWeighted(input);
   const auto& edges = graph.Edges();
+
   ASSERT_EQ(edges.size(), 3);
 
   ASSERT_EQ(StartVert(edges[0]), 0);
