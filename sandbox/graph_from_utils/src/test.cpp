@@ -168,7 +168,7 @@ TEST(GraphTest, GraphFromMapTest) {
   ASSERT_EQ(graph.VertsAmount(), 26);
   ASSERT_EQ(graph.EdgesAmount(), 4);
 
-  std::cout << graph << std::endl;
+  // std::cout << graph << std::endl;
 
   ASSERT_TRUE(graph.IsWeighted());
   ASSERT_TRUE(graph.IsOrient());
@@ -194,6 +194,81 @@ TEST(GraphTest, GraphFromStrsTest) {
   ASSERT_TRUE(empty_graph.IsOrient());
 
   std::vector<std::string> invalid_edges_strs = {"0-1", "2-1", "3->2", "1>3"};
-
   ASSERT_THROW(Graph::GraphFromStrs(invalid_edges_strs), std::invalid_argument);
+
+  invalid_edges_strs = {"0->vert", "2->1", "3->2", "1->3"};
+  ASSERT_THROW(Graph::GraphFromStrs(invalid_edges_strs), std::invalid_argument);
+}
+
+TEST(GraphTest, GraphWeighted_EmptyInput) {
+  std::vector<std::tuple<size_t, size_t, weight_t>> empty_input;
+  Graph graph = Graph::GraphWeighted(empty_input);
+  ASSERT_EQ(graph.VertsAmount(), 0);
+  ASSERT_EQ(graph.EdgesAmount(), 0);
+}
+
+TEST(GraphTest, GraphWeighted_SingleEdge) {
+  std::vector<std::tuple<size_t, size_t, weight_t>> input = {{0, 1, 5}};
+  Graph graph = Graph::GraphWeighted(input);
+  ASSERT_EQ(graph.VertsAmount(), 2);
+  ASSERT_EQ(graph.EdgesAmount(), 1);
+  ASSERT_TRUE(graph.IsWeighted());
+}
+
+TEST(GraphTest, GraphWeighted_MultipleEdges) {
+  std::vector<std::tuple<size_t, size_t, weight_t>> input = {
+      {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
+  Graph graph = Graph::GraphWeighted(input);
+  ASSERT_EQ(graph.VertsAmount(), 3);
+  ASSERT_EQ(graph.EdgesAmount(), 3);
+  ASSERT_TRUE(graph.IsWeighted());
+}
+
+TEST(GraphTest, Edges_EmptyGraph) {
+  std::vector<std::tuple<size_t, size_t, weight_t>> empty_input;
+  Graph graph = Graph::GraphWeighted(empty_input);
+  auto edges = graph.Edges();
+  ASSERT_TRUE(edges.empty());
+}
+
+TEST(GraphTest, Edges_SingleEdge) {
+  std::vector<std::tuple<size_t, size_t, weight_t>> input = {{0, 1, 5}};
+  Graph graph = Graph::GraphWeighted(input);
+  auto edges = graph.Edges();
+  ASSERT_EQ(edges.size(), 1);
+  ASSERT_EQ(StartVert(edges[0]), 0);
+  ASSERT_EQ(EndVert(edges[0]), 1);
+  ASSERT_EQ(Weight(edges[0]), 5);
+}
+
+TEST(GraphTest, Edges_MultipleEdges) {
+  std::vector<std::tuple<size_t, size_t, weight_t>> input = {
+      {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
+  Graph graph = Graph::GraphWeighted(input);
+  auto edges = graph.Edges();
+  ASSERT_EQ(edges.size(), 3);
+
+  ASSERT_EQ(StartVert(edges[0]), 0);
+  ASSERT_EQ(EndVert(edges[0]), 1);
+  ASSERT_EQ(Weight(edges[0]), 5);
+
+  ASSERT_EQ(StartVert(edges[1]), 1);
+  ASSERT_EQ(EndVert(edges[1]), 2);
+  ASSERT_EQ(Weight(edges[1]), 10);
+
+  ASSERT_EQ(StartVert(edges[2]), 2);
+  ASSERT_EQ(EndVert(edges[2]), 0);
+  ASSERT_EQ(Weight(edges[2]), 3);
+}
+
+TEST(GraphTest, Edges_ConstAccess) {
+  std::vector<std::tuple<size_t, size_t, weight_t>> input = {
+      {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
+  Graph graph = Graph::GraphWeighted(input);
+  const auto& edges = graph.Edges();
+  ASSERT_EQ(edges.size(), 3);
+
+  ASSERT_EQ(StartVert(edges[0]), 0);
+  ASSERT_EQ(EndVert(edges[0]), 1);
+  ASSERT_EQ(Weight(edges[0]), 5);
 }

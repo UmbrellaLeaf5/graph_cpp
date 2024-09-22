@@ -19,6 +19,18 @@ bool Graph::IsWeighted() const {
   return is_weighted;
 }
 
+std::vector<std::tuple<size_t, size_t, weight_t>> Graph::Edges() {
+  if (edges_.empty()) return {};
+
+  std::vector<std::tuple<size_t, size_t, weight_t>> edges_tuples(edges_.size());
+  std::transform(
+      edges_.begin(), edges_.end(), edges_tuples.begin(), [](const Edge& edge) {
+        return std::make_tuple(edge.StartVert(), edge.EndVert(), edge.Weight());
+      });
+
+  return edges_tuples;
+}
+
 std::ostream& Graph::PrintVerts(std::ostream& os) const {
   os << Verts();
   return os;
@@ -65,10 +77,20 @@ std::pair<size_t, size_t> Graph::ParseEdgeString(const std::string& edge_str) {
   size_t pos = edge_str.find("->");
 
   if (pos == std::string::npos)
-    throw std::invalid_argument("EdgeString: Invalid edge string format: " +
+    throw std::invalid_argument("EdgeString: invalid edge string format: " +
                                 edge_str);
 
-  size_t start_vert = std::stoul(edge_str.substr(0, pos));
-  size_t end_vert = std::stoul(edge_str.substr(pos + 2));
-  return {start_vert, end_vert};
+  try {
+    size_t start_vert = std::stoul(edge_str.substr(0, pos));
+    size_t end_vert = std::stoul(edge_str.substr(pos + 2));
+
+    return {start_vert, end_vert};
+  }
+
+  except(...) {
+    raise std::invalid_argument(
+        "EdgeString: invalid edge string format "
+        "(vertices should be numbers): " +
+        edge_str);
+  }
 }

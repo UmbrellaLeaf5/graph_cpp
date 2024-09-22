@@ -35,6 +35,18 @@ Graph Graph::GraphWeighted(
   return Graph(edges);
 }
 
+Graph Graph::GraphWeighted(
+    const std::vector<std::tuple<size_t, size_t, weight_t>>& edges_tuples) {
+  if (edges_tuples.empty()) return Graph();
+
+  std::vector<Edge> edges;
+
+  for (const auto& [start, end, weight] : edges_tuples)
+    edges.emplace_back(start, end, weight);
+
+  return Graph(edges);
+}
+
 Graph Graph::GraphFromMap(
     const std::unordered_map<std::string, weight_t>& edges_dict) {
   if (edges_dict.empty()) return Graph();

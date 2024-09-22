@@ -21,6 +21,9 @@ class Graph {
       const std::vector<std::pair<size_t, size_t>>& edges_pairs,
       const std::vector<weight_t>& weights);
 
+  static Graph GraphWeighted(
+      const std::vector<std::tuple<size_t, size_t, weight_t>>& edges_tuples);
+
   static Graph GraphFromMap(
       const std::unordered_map<std::string, weight_t>& edges_dict);
 
@@ -39,6 +42,7 @@ class Graph {
   size_t EdgesAmount() const { return edges_.size(); }
 
   const std::vector<size_t>& Verts() const { return verts_; }
+  std::vector<std::tuple<size_t, size_t, weight_t>> Edges();
 
   std::ostream& PrintVerts(std::ostream& os = std::cout) const;
   std::ostream& PrintEdges(std::ostream& os = std::cout) const;
@@ -99,3 +103,15 @@ class Graph {
 };
 
 std::ostream& operator<<(std::ostream& os, const Graph& graph);
+
+inline size_t StartVert(const std::tuple<size_t, size_t, weight_t>& edge) {
+  return std::get<0>(edge);
+}
+
+inline size_t EndVert(const std::tuple<size_t, size_t, weight_t>& edge) {
+  return std::get<1>(edge);
+}
+
+inline weight_t Weight(const std::tuple<size_t, size_t, weight_t>& edge) {
+  return std::get<2>(edge);
+}
