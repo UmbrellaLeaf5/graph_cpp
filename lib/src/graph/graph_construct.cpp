@@ -52,3 +52,37 @@ Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphWeighted(
 
   return Graph(edges);
 }
+
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromMap(
+    const std::unordered_map<std::string, weight_t>& edges_dict) {
+  if (edges_dict.empty()) return Graph();
+
+  std::vector<Graph<vert_t, weight_t>::Edge> edges;
+
+  for (const auto& [edge_str, weight] : edges_dict) {
+    vert_t start_vert, end_vert;
+    std::tie(start_vert, end_vert) = ParseEdgeString(edge_str);
+
+    edges.emplace_back(start_vert, end_vert, weight);
+  }
+
+  return Graph(edges);
+}
+
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromStrs(
+    const std::vector<std::string>& edges_strs) {
+  if (edges_strs.empty()) return Graph();
+
+  std::vector<Graph<vert_t, weight_t>::Edge> edges;
+
+  for (const auto& edge_str : edges_strs) {
+    vert_t start_vert, end_vert;
+    std::tie(start_vert, end_vert) = ParseEdgeString(edge_str);
+
+    edges.emplace_back(start_vert, end_vert);
+  }
+
+  return Graph(edges);
+}

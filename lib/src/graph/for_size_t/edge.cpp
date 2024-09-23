@@ -13,7 +13,7 @@ const std::string& Graph<vert_t, weight_t>::Edge::Name() const {
     name = "[" + std::to_string(StartVert()) + "->" +
            std::to_string(EndVert()) + "]";
 
-  //  example: "[4->5]"
+  // example: "[4->5]"
 
   return name;
 }

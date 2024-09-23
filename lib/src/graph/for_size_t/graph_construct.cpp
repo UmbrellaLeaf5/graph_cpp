@@ -48,45 +48,12 @@ Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromAdjList(
 }
 
 template <typename vert_t, typename weight_t>
-Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromMap(
-    const std::unordered_map<std::string, weight_t>& edges_dict) {
-  if (edges_dict.empty()) return Graph();
-
-  std::vector<Graph<vert_t, weight_t>::Edge> edges;
-
-  for (const auto& [edge_str, weight] : edges_dict) {
-    vert_t start_vert, end_vert;
-    std::tie(start_vert, end_vert) = ParseEdgeString(edge_str);
-
-    edges.emplace_back(start_vert, end_vert, weight);
-  }
-
-  return Graph(edges);
-}
-
-template <typename vert_t, typename weight_t>
-Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromStrs(
-    const std::vector<std::string>& edges_strs) {
-  if (edges_strs.empty()) return Graph();
-
-  std::vector<Graph<vert_t, weight_t>::Edge> edges;
-
-  for (const auto& edge_str : edges_strs) {
-    vert_t start_vert, end_vert;
-    std::tie(start_vert, end_vert) = ParseEdgeString(edge_str);
-
-    edges.emplace_back(start_vert, end_vert);
-  }
-
-  return Graph(edges);
-}
-
-template <typename vert_t, typename weight_t>
 Graph<vert_t, weight_t>::Graph(const std::vector<Edge>& edges)
     : edges_{edges}, verts_() {
   if (edges.empty()) return;
 
-  // кол-во вершин = максимальная вершина среди ребер
+  // кол-во вершин = максимальная вершина среди ребер, т.е. в случае size_t
+  // происходит заполнение вершин до наибольшей из них в списке ребер
   vert_t max_vert = 0;
   for (const auto& edge : edges_) {
     max_vert = std::max(max_vert, edge.StartVert());
