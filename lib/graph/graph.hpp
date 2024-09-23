@@ -53,12 +53,6 @@ class Graph {
    * @return Graph: новый экземпляр Graph
    * @throw std::invalid_argument("GraphWeighted: the sizes of the edges and
    * weights vectors do not match.");
-   *
-   * @example code:
-   * std::vector<std::pair<vert_t, vert_t>> edges_pairs = {{0, 1}, {1, 2},
-   *                                                       {2, 0}};
-   * std::vector<long> weights = {1, 2, 3};
-   * Graph graph = Graph::GraphWeighted(edges_pairs, weights);
    */
   static Graph GraphWeighted(
       const std::vector<std::pair<vert_t, vert_t>>& edges_pairs,
@@ -69,11 +63,6 @@ class Graph {
    * представленными вектором std::tuple (ВЗВЕШЕННЫЙ)
    * @param edges_tuples: ребра графа
    * @return Graph: новый экземпляр Graph
-   *
-   * @example code:
-   * std::vector<std::tuple<vert_t, vert_t, weight_t>> input = {
-   *   {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
-   * Graph graph = Graph::GraphWeighted(input);
    */
   static Graph GraphWeighted(
       const std::vector<std::tuple<vert_t, vert_t, weight_t>>& edges_tuples);
@@ -83,10 +72,6 @@ class Graph {
    * представленными вектором std::string (НЕВЗВЕШЕННЫЙ)
    * @param edges_strs: ребра графа
    * @return Graph: новый экземпляр Graph
-   *
-   * @example code:
-   * std::vector<std::string> edges_strs = {"0->1", "2->1", "3->2", "1->3"};
-   * Graph graph = Graph::GraphFromStrs(edges_strs);
    */
   static Graph GraphFromStrs(const std::vector<std::string>& edges_strs);
 
@@ -95,11 +80,6 @@ class Graph {
    * представленными словарем из std::string и weight_t (ВЗВЕШЕННЫЙ)
    * @param edges_dict: ребра графа
    * @return Graph: новый экземпляр Graph
-   *
-   * @example code:
-   * std::unordered_map<std::string, weight_t> edges_dict = {
-   *     {"0->1", 5}, {"2->1", 1}, {"3->2", 2}, {"1->3", 3}};
-   * Graph graph = Graph::GraphFromMap(edges_dict);
    */
   static Graph GraphFromMap(
       const std::unordered_map<std::string, weight_t>& edges_dict);
@@ -115,17 +95,6 @@ class Graph {
    * squared [row problem].");
    * @throw std::logic_error("GraphFromAdjMatrix: this method (constructor) is
    * deleted for std::string.");
-   *
-   * @example code:
-   * std::vector<std::vector<long>> adj_matrix = {{0, 1, 0},
-   *                                              {1, 0, 1},
-   *                                              {0, 1, 0}};
-   * Graph graph = Graph::GraphFromAdjMatrix(adj_matrix);
-   *
-   * std::vector<std::vector<long>> adj_matrix_2 = {{0, 1, 0},
-   *                                                {1, 0, 5},
-   *                                                {0, 7, 0}};
-   * Graph graph_2 = Graph::GraphFromAdjMatrix(adj_matrix_2, true);
    */
   static Graph GraphFromAdjMatrix(
       const std::vector<std::vector<weight_t>>& adj_matrix,
@@ -138,12 +107,6 @@ class Graph {
    * @return Graph: новый экземпляр Graph
    * @throw std::logic_error("GraphFromAdjList: this method (constructor) is
    * deleted for std::string.");
-   *
-   * @example code:
-   * std::vector<std::vector<vert_t>> adj_list = {{1},
-   *                                              {0, 2},
-   *                                              {1}};
-   * Graph graph = Graph::GraphFromAdjList(adj_list);
    */
   static Graph GraphFromAdjList(
       const std::vector<std::vector<vert_t>>& adj_list);
