@@ -1,22 +1,28 @@
 #include "../graph.hpp"
 
+template class Graph<short, long>;
+template class Graph<int, long>;
 template class Graph<size_t, long>;
+
+template class Graph<short, double>;
+template class Graph<int, double>;
+template class Graph<size_t, double>;
 
 template <typename vert_t, typename weight_t>
 Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromAdjMatrix(
     const std::vector<std::vector<weight_t>>& adj_matrix, bool is_weighted) {
-  std::vector<Edge> edges{};
-
   if (adj_matrix.empty()) return Graph();
 
+  std::vector<Edge> edges{};
+
   if (adj_matrix.size() != adj_matrix[0].size())
-    raise std::invalid_argument(
+    throw std::invalid_argument(
         "GraphFromAdjMatrix: AdjacencyMatrix is not squared.");
 
   for (size_t row = 0; row < adj_matrix.size(); row++) {
     if (row != 0)
       if (adj_matrix[row].size() != adj_matrix[row - 1].size())
-        raise std::invalid_argument(
+        throw std::invalid_argument(
             "GraphFromAdjMatrix: AdjacencyMatrix is not squared [row "
             "problem].");
 

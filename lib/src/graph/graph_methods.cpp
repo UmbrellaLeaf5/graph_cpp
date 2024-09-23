@@ -1,7 +1,15 @@
 #include "graph.hpp"
 
-template class Graph<size_t, long>;
 template class Graph<std::string, long>;
+template class Graph<std::string, double>;
+
+template class Graph<short, long>;
+template class Graph<int, long>;
+template class Graph<size_t, long>;
+
+template class Graph<short, double>;
+template class Graph<int, double>;
+template class Graph<size_t, double>;
 
 template <typename vert_t, typename weight_t>
 bool Graph<vert_t, weight_t>::IsWeighted() const {
@@ -76,6 +84,7 @@ void Graph<vert_t, weight_t>::MakeUndirected(bool remove_duplicates) {
 
   edges_ = std::move(unique_edges);
   is_direct = false;
+
   if (remove_duplicates) RemoveDuplicates();
 }
 
@@ -96,10 +105,10 @@ template <typename vert_t, typename weight_t>
 bool Graph<vert_t, weight_t>::ContainsEdge(
     const std::tuple<vert_t, vert_t, weight_t>& edge) const {
   if (!IsWeighted())
-    raise std::logic_error("ContainsEdge: graph is not weighted.");
+    throw std::logic_error("ContainsEdge: graph is not weighted.");
 
   if (WeightFromTuple(edge) <= 0)
-    raise std::logic_error("ContainsEdge: weight must be greater than zero.");
+    throw std::logic_error("ContainsEdge: weight must be greater than zero.");
 
   auto [start_vert, end_vert, weight] = edge;
 
@@ -133,7 +142,7 @@ weight_t Graph<vert_t, weight_t>::GetWeightOfEdge(
     throw std::logic_error("GetWeightOfEdge: graph is not weighted.");
 
   if (!ContainsEdge(edge))
-    raise std::invalid_argument("GetWeightOfEdge: there is no edge: " +
+    throw std::invalid_argument("GetWeightOfEdge: there is no edge: " +
                                 Edge(edge).Name());
 
   auto [start_vert, end_vert] = edge;
@@ -161,15 +170,15 @@ void Graph<vert_t, weight_t>::AddEdge(vert_t start_vert, vert_t end_vert,
     edges_.emplace_back(Edge(start_vert, end_vert, weight));
   }
 
-  except(const std::exception& ex) {
-    raise std::invalid_argument(std::string("AddEdge: ") + ex.what());
+  catch (const std::exception& ex) {
+    throw std::invalid_argument(std::string("AddEdge: ") + ex.what());
   }
 }
 
 template <typename vert_t, typename weight_t>
 void Graph<vert_t, weight_t>::AddEdge(vert_t start_vert, vert_t end_vert) {
   if (IsWeighted())
-    raise std::logic_error(
+    throw std::logic_error(
         "AddEdge: weighted graph must consist of weighted edges.");
 
   AddVert(start_vert);

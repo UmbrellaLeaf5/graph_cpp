@@ -1,7 +1,15 @@
 #include "graph.hpp"
 
-template class Graph<size_t, long>;
 template class Graph<std::string, long>;
+template class Graph<std::string, double>;
+
+template class Graph<short, long>;
+template class Graph<int, long>;
+template class Graph<size_t, long>;
+
+template class Graph<short, double>;
+template class Graph<int, double>;
+template class Graph<size_t, double>;
 
 template <typename vert_t, typename weight_t>
 Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphNonWeighted(
@@ -28,7 +36,7 @@ Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphWeighted(
   edges.reserve(edges_pairs.size());
 
   if (edges_pairs.size() != weights.size())
-    raise std::invalid_argument(
+    throw std::invalid_argument(
         "GraphWeighted: the sizes of the edges and weights vectors do not "
         "match.");
 

@@ -10,6 +10,14 @@
 
 // using weight_t = long;
 
+/**
+ * @brief Класс графа (может быть взвешенным и ориентированным)
+ * @details Поддерживаемые типы:
+ *                         вес: short, int, long, double
+ *                         вершина: std::string, size_t
+ * @tparam vert_t: тип вершин
+ * @tparam weight_t: тип весов
+ */
 template <typename vert_t, typename weight_t>
 class Graph {
  public:
@@ -31,6 +39,8 @@ class Graph {
    * @param edges_pairs: ребра графа
    * @param weights: веса ребер
    * @return Graph: новый экземпляр Graph
+   * @throw std::invalid_argument("GraphWeighted: the sizes of the edges and
+   * weights vectors do not match.");
    *
    * @example code:
    * std::vector<std::pair<vert_t, vert_t>> edges_pairs = {{0, 1}, {1, 2},
@@ -87,6 +97,12 @@ class Graph {
    * @param adj_matrix: матрица смежности
    * @param is_weighted: взвешен ли граф
    * @return Graph: новый экземпляр Graph
+   * @throw std::invalid_argument("GraphFromAdjMatrix: AdjacencyMatrix is not
+   * squared.");
+   * @throw std::invalid_argument("GraphFromAdjMatrix: AdjacencyMatrix is not
+   * squared [row problem].");
+   * @throw std::logic_error("GraphFromAdjMatrix: this method (constructor) is
+   * deleted for std::string.");
    *
    * @example code:
    * std::vector<std::vector<long>> adj_matrix = {{0, 1, 0},
@@ -108,6 +124,8 @@ class Graph {
    * по списку смежности (НЕВЗВЕШЕННЫЙ)
    * @param adj_list: список смежности
    * @return Graph: новый экземпляр Graph
+   * @throw std::logic_error("GraphFromAdjList: this method (constructor) is
+   * deleted for std::string.");
    *
    * @example code:
    * std::vector<std::vector<vert_t>> adj_list = {{1},
@@ -180,6 +198,8 @@ class Graph {
    * @param edge: ребро
    * @return true: содержится
    * @return false: не содержится
+   * @throw std::logic_error("ContainsEdge: graph is not weighted.");
+   * @throw std::logic_error("ContainsEdge: weight must be greater than zero.");
    */
   bool ContainsEdge(const std::tuple<vert_t, vert_t, weight_t>& edge) const;
 
@@ -195,15 +215,29 @@ class Graph {
    * @brief Находит вес ребра в взвешенном графе
    * @param edge: ребро
    * @return weight_t: вес
+   * @throw std::logic_error("GetWeightOfEdge: graph is not weighted.");
+   * @throw std::invalid_argument("GetWeightOfEdge: there is no edge: ");
    */
   weight_t GetWeightOfEdge(const std::pair<vert_t, vert_t>& edge) const;
 
   void AddVert(vert_t vert);
+
+  /// @throw std::invalid_argument(std::string("AddEdge: ") + ex.what());
   void AddEdge(vert_t start_vert, vert_t end_vert, weight_t weight);
+
+  /**
+   * @throw std::logic_error("AddEdge: weighted graph must consist of weighted
+   * edges.");
+   */
   void AddEdge(vert_t start_vert, vert_t end_vert);
 
+  /// @throw std::invalid_argument("RemoveVert: there is no such vert:");
   void RemoveVert(vert_t vert);
+
+  /// @throw std::invalid_argument("RemoveEdge: there is no such edge:");
   void RemoveEdge(const std::pair<vert_t, vert_t>& edge_pair);
+
+  /// @throw std::invalid_argument("RemoveEdge: there is no such edge:");
   void RemoveEdge(const std::tuple<vert_t, vert_t, weight_t>& edge_tuple);
 
  private:
@@ -214,6 +248,7 @@ class Graph {
     Edge(vert_t start_vert, vert_t end_vert)
         : start_vert_{start_vert}, end_vert_{end_vert} {}
 
+    /// @throw std::invalid_argument("Edge: weight must be greater than zero.");
     Edge(vert_t start_vert, vert_t end_vert, weight_t weight);
 
     Edge(std::pair<vert_t, vert_t> edge_pair);
@@ -223,12 +258,11 @@ class Graph {
 
     vert_t StartVert() const { return start_vert_; }
     vert_t EndVert() const { return end_vert_; }
+
+    /// @throw std::logic_error("Edge: " + Name() + " is not weighted.");
     weight_t Weight() const;
 
-    // friend std::ostream& operator<<(std::ostream& os,
-    //                                 const Graph<vert_t, weight_t>::Edge&
-    //                                 edge);
-    friend Graph;
+    // friend Graph;
 
     bool operator==(const Edge& rhs) const {
       return start_vert_ == rhs.start_vert_ && end_vert_ == rhs.end_vert_ &&
@@ -237,6 +271,8 @@ class Graph {
 
     bool operator!=(const Edge& rhs) const { return !(*this == rhs); }
 
+    /// @throw std::invalid_argument("Edge: unweighted edges are not
+    /// comparable.");
     auto operator<=>(const Edge& rhs) const;
 
     const std::string& Name() const;
@@ -264,10 +300,6 @@ class Graph {
 
   static std::pair<vert_t, vert_t> ParseEdgeString(const std::string& edge_str);
 };
-
-// template <typename vert_t, typename weight_t>
-// inline std::ostream& operator<<(std::ostream& os,
-//                                 const Graph<vert_t, weight_t>::Edge& edge)
 
 template <typename vert_t, typename weight_t>
 inline std::ostream& operator<<(std::ostream& os,

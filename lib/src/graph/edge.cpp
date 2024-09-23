@@ -1,14 +1,22 @@
 #include "graph.hpp"
 
-template class Graph<size_t, long>;
 template class Graph<std::string, long>;
+template class Graph<std::string, double>;
+
+template class Graph<short, long>;
+template class Graph<int, long>;
+template class Graph<size_t, long>;
+
+template class Graph<short, double>;
+template class Graph<int, double>;
+template class Graph<size_t, double>;
 
 template <typename vert_t, typename weight_t>
 Graph<vert_t, weight_t>::Edge::Edge(vert_t start_vert, vert_t end_vert,
                                     weight_t weight)
     : start_vert_{start_vert}, end_vert_{end_vert}, weight_{weight} {
   if (weight <= 0)
-    raise std::invalid_argument("Edge: weight must be greater than zero.");
+    throw std::invalid_argument("Edge: weight must be greater than zero.");
 }
 
 template <typename vert_t, typename weight_t>
@@ -25,7 +33,7 @@ Graph<vert_t, weight_t>::Edge::Edge(
 template <typename vert_t, typename weight_t>
 weight_t Graph<vert_t, weight_t>::Edge::Weight() const {
   if (!IsWeighted())
-    raise std::logic_error("Edge: " + Name() + " is not weighted.");
+    throw std::logic_error("Edge: " + Name() + " is not weighted.");
 
   return weight_;
 }
@@ -33,7 +41,7 @@ weight_t Graph<vert_t, weight_t>::Edge::Weight() const {
 template <typename vert_t, typename weight_t>
 auto Graph<vert_t, weight_t>::Edge::operator<=>(const Edge& rhs) const {
   if (!(IsWeighted() && rhs.IsWeighted()))
-    raise std::invalid_argument("Edge: unweighted edges are not comparable.");
+    throw std::invalid_argument("Edge: unweighted edges are not comparable.");
 
   return weight_ <=> rhs.Weight();
 }

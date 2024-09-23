@@ -1,6 +1,12 @@
 #include "../graph.hpp"
 
+template class Graph<short, long>;
+template class Graph<int, long>;
 template class Graph<size_t, long>;
+
+template class Graph<short, double>;
+template class Graph<int, double>;
+template class Graph<size_t, double>;
 
 template <typename vert_t, typename weight_t>
 const std::string& Graph<vert_t, weight_t>::Edge::Name() const {

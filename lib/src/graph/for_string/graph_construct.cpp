@@ -1,6 +1,7 @@
 #include "../graph.hpp"
 
 template class Graph<std::string, long>;
+template class Graph<std::string, double>;
 
 template <typename vert_t, typename weight_t>
 Graph<vert_t, weight_t>::Graph(const std::vector<Edge>& edges)
@@ -23,7 +24,7 @@ template <typename vert_t, typename weight_t>
 Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromAdjMatrix(
     [[maybe_unused]] const std::vector<std::vector<weight_t>>& adj_matrix,
     [[maybe_unused]] bool is_weighted) {
-  raise std::logic_error(
+  throw std::logic_error(
       "GraphFromAdjMatrix: this method (constructor) "
       "is deleted for std::string.");
 }
@@ -31,7 +32,7 @@ Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromAdjMatrix(
 template <typename vert_t, typename weight_t>
 Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromAdjList(
     [[maybe_unused]] const std::vector<std::vector<vert_t>>& adj_list) {
-  raise std::logic_error(
+  throw std::logic_error(
       "GraphFromAdjList: this method (constructor) "
       "is deleted for std::string.");
 }

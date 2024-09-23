@@ -1,6 +1,12 @@
 #include "../graph.hpp"
 
+template class Graph<short, long>;
+template class Graph<int, long>;
 template class Graph<size_t, long>;
+
+template class Graph<short, double>;
+template class Graph<int, double>;
+template class Graph<size_t, double>;
 
 template <typename vert_t, typename weight_t>
 std::vector<std::vector<vert_t>> Graph<vert_t, weight_t>::GetAdjList() const {
@@ -39,7 +45,7 @@ std::pair<vert_t, vert_t> Graph<vert_t, weight_t>::ParseEdgeString(
     const std::string& edge_str) {
   vert_t pos = edge_str.find("->");
 
-  if (pos == std::string::npos)
+  if (size_t(pos) == std::string::npos)
     throw std::invalid_argument("EdgeString: invalid edge string format: " +
                                 edge_str);
 
@@ -50,8 +56,8 @@ std::pair<vert_t, vert_t> Graph<vert_t, weight_t>::ParseEdgeString(
     return {start_vert, end_vert};
   }
 
-  except(...) {
-    raise std::invalid_argument(
+  catch (...) {
+    throw std::invalid_argument(
         "EdgeString: invalid edge string format "
         "(vertices should be numbers): " +
         edge_str);
@@ -61,7 +67,7 @@ std::pair<vert_t, vert_t> Graph<vert_t, weight_t>::ParseEdgeString(
 template <typename vert_t, typename weight_t>
 void Graph<vert_t, weight_t>::RemoveVert(vert_t vert) {
   if (!Contains(Verts(), vert))
-    raise std::invalid_argument("RemoveVert: there is no such vert in graph: " +
+    throw std::invalid_argument("RemoveVert: there is no such vert in graph: " +
                                 std::to_string(vert));
 
   verts_.erase(std::remove(verts_.begin(), verts_.end(), vert), verts_.end());

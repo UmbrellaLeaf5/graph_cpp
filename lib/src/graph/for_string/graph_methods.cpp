@@ -1,11 +1,12 @@
 #include "../graph.hpp"
 
 template class Graph<std::string, long>;
+template class Graph<std::string, double>;
 
 template <typename vert_t, typename weight_t>
 void Graph<vert_t, weight_t>::RemoveVert(vert_t vert) {
   if (!Contains(Verts(), vert))
-    raise std::invalid_argument("RemoveVert: there is no such vert in graph: " +
+    throw std::invalid_argument("RemoveVert: there is no such vert in graph: " +
                                 vert);
 
   verts_.erase(std::remove(verts_.begin(), verts_.end(), vert), verts_.end());
@@ -37,12 +38,12 @@ std::pair<vert_t, vert_t> Graph<vert_t, weight_t>::ParseEdgeString(
 
 template <typename vert_t, typename weight_t>
 std::vector<std::vector<vert_t>> Graph<vert_t, weight_t>::GetAdjList() const {
-  raise std::logic_error("GetAdjList: this method is deleted for std::string.");
+  throw std::logic_error("GetAdjList: this method is deleted for std::string.");
 }
 
 template <typename vert_t, typename weight_t>
 std::vector<std::vector<weight_t>> Graph<vert_t, weight_t>::GetAdjMatrix()
     const {
-  raise std::logic_error(
+  throw std::logic_error(
       "GetAdjMatrix: this method is deleted for std::string.");
 }
