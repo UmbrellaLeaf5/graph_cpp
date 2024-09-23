@@ -6,7 +6,7 @@
 #include <unordered_set>
 #include <variant>
 
-#include "../lib/utils.hpp"
+#include "../utils.hpp"
 
 template <typename T1>
 concept AllowedVertType =

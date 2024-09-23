@@ -18,7 +18,21 @@ using std::size_t;
 // clang-format on
 
 /**
- * @brief перегрузка, которая выводит все элементы вектора в поток
+ * @brief Выводит все элементы пары в поток
+ * @tparam Type1: тип, возможный к выводу в консоль
+ * @tparam Type2: тип, возможный к выводу в консоль
+ * @param os: ссылка на поток, в который надо вывести (мод.)
+ * @param pair: пара элементов произвольного типа
+ * @return std::ostream&: ссылка на поток, в который вывели
+ */
+template <typename Type1, typename Type2>
+inline std::ostream& operator<<(std::ostream& os,
+                                const std::pair<Type1, Type2>& pair) {
+  return os << "{" << pair.first << "; " << pair.second << "}";
+}
+
+/**
+ * @brief Выводит все элементы вектора в поток
  * @tparam Type: тип, возможный к выводу в консоль
  * @param os: ссылка на поток, в который надо вывести (мод.)
  * @param vec: вектор элементов произвольного типа
