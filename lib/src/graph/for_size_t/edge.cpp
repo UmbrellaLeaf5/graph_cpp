@@ -1,39 +1,44 @@
-#include "../graph.hpp"
+#include "../../graph.hpp"
 
-std::ostream& operator<<(std::ostream& os, const Graph::Edge& edge) {
-  os << edge.Name();
-  return os;
-}
+template class Graph<size_t, long>;
 
-Graph::Edge::Edge(size_t start_vert, size_t end_vert, weight_t weight)
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t>::Edge::Edge(vert_t start_vert, vert_t end_vert,
+                                    weight_t weight)
     : start_vert_{start_vert}, end_vert_{end_vert}, weight_{weight} {
   if (weight <= 0)
     raise std::invalid_argument("Edge: weight must be greater than zero.");
 }
 
-Graph::Edge::Edge(std::pair<size_t, size_t> edge_pair)
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t>::Edge::Edge(std::pair<vert_t, vert_t> edge_pair)
     : start_vert_{edge_pair.first}, end_vert_{edge_pair.second} {}
 
-Graph::Edge::Edge(std::tuple<size_t, size_t, weight_t> edge_tuple)
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t>::Edge::Edge(
+    std::tuple<vert_t, vert_t, weight_t> edge_tuple)
     : start_vert_{StartVertFromTuple(edge_tuple)},
       end_vert_{EndVertFromTuple(edge_tuple)},
       weight_{WeightFromTuple(edge_tuple)} {}
 
-weight_t Graph::Edge::Weight() const {
+template <typename vert_t, typename weight_t>
+weight_t Graph<vert_t, weight_t>::Edge::Weight() const {
   if (!IsWeighted())
     raise std::logic_error("Edge: " + Name() + " is not weighted.");
 
   return weight_;
 }
 
-auto Graph::Edge::operator<=>(const Edge& rhs) const {
+template <typename vert_t, typename weight_t>
+auto Graph<vert_t, weight_t>::Edge::operator<=>(const Edge& rhs) const {
   if (!(IsWeighted() && rhs.IsWeighted()))
     raise std::invalid_argument("Edge: unweighted edges are not comparable.");
 
   return weight_ <=> rhs.Weight();
 }
 
-const std::string& Graph::Edge::Name() const {
+template <typename vert_t, typename weight_t>
+const std::string& Graph<vert_t, weight_t>::Edge::Name() const {
   static std::string name;
 
   if (IsWeighted())

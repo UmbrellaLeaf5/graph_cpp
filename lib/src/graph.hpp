@@ -8,8 +8,9 @@
 
 #include "util.hpp"
 
-using weight_t = long;
+// using weight_t = long;
 
+template <typename vert_t, typename weight_t>
 class Graph {
  public:
   /// @brief Инициализирует новый экземпляр Graph
@@ -22,7 +23,7 @@ class Graph {
    * @return Graph: новый экземпляр Graph
    */
   static Graph GraphNonWeighted(
-      const std::vector<std::pair<size_t, size_t>>& edges_pairs);
+      const std::vector<std::pair<vert_t, vert_t>>& edges_pairs);
 
   /**
    * @brief Создает новый экземпляр Graph по ребрам,
@@ -32,13 +33,13 @@ class Graph {
    * @return Graph: новый экземпляр Graph
    *
    * @example code:
-   * std::vector<std::pair<size_t, size_t>> edges_pairs = {{0, 1}, {1, 2},
+   * std::vector<std::pair<vert_t, vert_t>> edges_pairs = {{0, 1}, {1, 2},
    *                                                       {2, 0}};
    * std::vector<long> weights = {1, 2, 3};
    * Graph graph = Graph::GraphWeighted(edges_pairs, weights);
    */
   static Graph GraphWeighted(
-      const std::vector<std::pair<size_t, size_t>>& edges_pairs,
+      const std::vector<std::pair<vert_t, vert_t>>& edges_pairs,
       const std::vector<weight_t>& weights);
 
   /**
@@ -48,12 +49,12 @@ class Graph {
    * @return Graph: новый экземпляр Graph
    *
    * @example code:
-   * std::vector<std::tuple<size_t, size_t, weight_t>> input = {
+   * std::vector<std::tuple<vert_t, vert_t, weight_t>> input = {
    *   {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
    * Graph graph = Graph::GraphWeighted(input);
    */
   static Graph GraphWeighted(
-      const std::vector<std::tuple<size_t, size_t, weight_t>>& edges_tuples);
+      const std::vector<std::tuple<vert_t, vert_t, weight_t>>& edges_tuples);
 
   /**
    * @brief Создает новый экземпляр Graph по ребрам
@@ -109,28 +110,28 @@ class Graph {
    * @return Graph: новый экземпляр Graph
    *
    * @example code:
-   * std::vector<std::vector<size_t>> adj_list = {{1},
+   * std::vector<std::vector<vert_t>> adj_list = {{1},
    *                                              {0, 2},
    *                                              {1}};
    * Graph graph = Graph::GraphFromAdjList(adj_list);
    */
   static Graph GraphFromAdjList(
-      const std::vector<std::vector<size_t>>& adj_list);
+      const std::vector<std::vector<vert_t>>& adj_list);
 
   /// @brief Проверяет, взвешен ли граф
   bool IsWeighted() const;
 
-  /// @return size_t: кол-во вершин
-  size_t VertsAmount() const { return verts_.size(); }
+  /// @return vert_t: кол-во вершин
+  vert_t VertsAmount() const { return verts_.size(); }
 
-  /// @return size_t: кол-во ребер
-  size_t EdgesAmount() const { return edges_.size(); }
+  /// @return vert_t: кол-во ребер
+  vert_t EdgesAmount() const { return edges_.size(); }
 
-  /// @return const std::vector<size_t>&: вершины
-  const std::vector<size_t>& Verts() const { return verts_; }
+  /// @return const std::vector<vert_t>&: вершины
+  const std::vector<vert_t>& Verts() const { return verts_; }
 
-  /// @return std::vector<std::tuple<size_t, size_t, weight_t>>: ребра
-  std::vector<std::tuple<size_t, size_t, weight_t>> Edges() const;
+  /// @return std::vector<std::tuple<vert_t, vert_t, weight_t>>: ребра
+  std::vector<std::tuple<vert_t, vert_t, weight_t>> Edges() const;
 
   /**
    * @brief Выводит в поток список вершин
@@ -168,10 +169,10 @@ class Graph {
   /// @brief Удаляет из графа ребрами с одинаковым вершинами
   void RemoveDuplicates();
 
-  /// @return std::vector<std::vector<size_t>>: список смежности
-  std::vector<std::vector<size_t>> GetAdjList() const;
+  /// @return std::vector<std::vector<vert_t>>: список смежности
+  std::vector<std::vector<vert_t>> GetAdjList() const;
 
-  /// @return std::vector<std::vector<size_t>>: матрица смежности
+  /// @return std::vector<std::vector<vert_t>>: матрица смежности
   std::vector<std::vector<weight_t>> GetAdjMatrix() const;
 
   /**
@@ -180,7 +181,7 @@ class Graph {
    * @return true: содержится
    * @return false: не содержится
    */
-  bool ContainsEdge(const std::tuple<size_t, size_t, weight_t>& edge) const;
+  bool ContainsEdge(const std::tuple<vert_t, vert_t, weight_t>& edge) const;
 
   /**
    * @brief Проверяет, содержится ли ребро в графе (НЕВЗВЕШЕННЫЙ)
@@ -188,43 +189,46 @@ class Graph {
    * @return true: содержится
    * @return false: не содержится
    */
-  bool ContainsEdge(const std::pair<size_t, size_t>& edge) const;
+  bool ContainsEdge(const std::pair<vert_t, vert_t>& edge) const;
 
   /**
    * @brief Находит вес ребра в взвешенном графе
    * @param edge: ребро
    * @return weight_t: вес
    */
-  weight_t GetWeightOfEdge(const std::pair<size_t, size_t>& edge) const;
+  weight_t GetWeightOfEdge(const std::pair<vert_t, vert_t>& edge) const;
 
-  void AddVert(size_t vert);
-  void AddEdge(size_t start_vert, size_t end_vert, weight_t weight);
-  void AddEdge(size_t start_vert, size_t end_vert);
+  void AddVert(vert_t vert);
+  void AddEdge(vert_t start_vert, vert_t end_vert, weight_t weight);
+  void AddEdge(vert_t start_vert, vert_t end_vert);
 
-  void RemoveVert(size_t vert);
-  void RemoveEdge(const std::pair<size_t, size_t>& edge_pair);
-  void RemoveEdge(const std::tuple<size_t, size_t, weight_t>& edge_tuple);
+  void RemoveVert(vert_t vert);
+  void RemoveEdge(const std::pair<vert_t, vert_t>& edge_pair);
+  void RemoveEdge(const std::tuple<vert_t, vert_t, weight_t>& edge_tuple);
 
  private:
   class Edge {
    public:
     Edge() = delete;
 
-    Edge(size_t start_vert, size_t end_vert)
+    Edge(vert_t start_vert, vert_t end_vert)
         : start_vert_{start_vert}, end_vert_{end_vert} {}
 
-    Edge(size_t start_vert, size_t end_vert, weight_t weight);
+    Edge(vert_t start_vert, vert_t end_vert, weight_t weight);
 
-    Edge(std::pair<size_t, size_t> edge_pair);
-    Edge(std::tuple<size_t, size_t, weight_t> edge_tuple);
+    Edge(std::pair<vert_t, vert_t> edge_pair);
+    Edge(std::tuple<vert_t, vert_t, weight_t> edge_tuple);
 
     bool IsWeighted() const { return weight_ != 0; }
 
-    size_t StartVert() const { return start_vert_; }
-    size_t EndVert() const { return end_vert_; }
+    vert_t StartVert() const { return start_vert_; }
+    vert_t EndVert() const { return end_vert_; }
     weight_t Weight() const;
 
-    friend std::ostream& operator<<(std::ostream& os, const Edge& edge);
+    // friend std::ostream& operator<<(std::ostream& os,
+    //                                 const Graph<vert_t, weight_t>::Edge&
+    //                                 edge);
+    friend Graph;
 
     bool operator==(const Edge& rhs) const {
       return start_vert_ == rhs.start_vert_ && end_vert_ == rhs.end_vert_ &&
@@ -238,38 +242,60 @@ class Graph {
     const std::string& Name() const;
 
    private:
-    size_t start_vert_;
-    size_t end_vert_;
+    vert_t start_vert_;
+    vert_t end_vert_;
     weight_t weight_ = 0;
   };
 
   std::vector<Edge> edges_;
-  std::vector<size_t> verts_;
+  std::vector<vert_t> verts_;
 
   bool is_direct = true;
 
  public:
-  friend std::ostream& operator<<(std::ostream& os, const Graph::Edge& edge);
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const Graph<vert_t, weight_t>::Edge& edge) {
+    os << edge.Name();
+    return os;
+  }
 
  private:
   Graph(const std::vector<Edge>& edges);
 
-  static std::pair<size_t, size_t> ParseEdgeString(const std::string& edge_str);
+  static std::pair<vert_t, vert_t> ParseEdgeString(const std::string& edge_str);
 };
 
-std::ostream& operator<<(std::ostream& os, const Graph& graph);
+// template <typename vert_t, typename weight_t>
+// inline std::ostream& operator<<(std::ostream& os,
+//                                 const Graph<vert_t, weight_t>::Edge& edge)
 
-inline size_t StartVertFromTuple(
-    const std::tuple<size_t, size_t, weight_t>& edge) {
+template <typename vert_t, typename weight_t>
+inline std::ostream& operator<<(std::ostream& os,
+                                const Graph<vert_t, weight_t>& graph) {
+  os << "Edges:\n     ";
+  graph.PrintEdges(os);
+
+  os << "\n";
+
+  os << "Vertices:\n     ";
+  graph.PrintVerts(os);
+  return os;
+}
+
+template <typename vert_t, typename weight_t>
+inline vert_t StartVertFromTuple(
+    const std::tuple<vert_t, vert_t, weight_t>& edge) {
   return std::get<0>(edge);
 }
 
-inline size_t EndVertFromTuple(
-    const std::tuple<size_t, size_t, weight_t>& edge) {
+template <typename vert_t, typename weight_t>
+inline vert_t EndVertFromTuple(
+    const std::tuple<vert_t, vert_t, weight_t>& edge) {
   return std::get<1>(edge);
 }
 
+template <typename vert_t, typename weight_t>
 inline weight_t WeightFromTuple(
-    const std::tuple<size_t, size_t, weight_t>& edge) {
+    const std::tuple<vert_t, vert_t, weight_t>& edge) {
   return std::get<2>(edge);
 }

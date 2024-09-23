@@ -1,7 +1,10 @@
-#include "../graph.hpp"
+#include "../../graph.hpp"
 
-Graph Graph::GraphNonWeighted(
-    const std::vector<std::pair<size_t, size_t>>& edges_pairs) {
+template class Graph<size_t, long>;
+
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphNonWeighted(
+    const std::vector<std::pair<vert_t, vert_t>>& edges_pairs) {
   if (edges_pairs.empty()) return Graph();
 
   std::vector<Edge> edges{};
@@ -14,8 +17,9 @@ Graph Graph::GraphNonWeighted(
   return Graph(edges);
 }
 
-Graph Graph::GraphWeighted(
-    const std::vector<std::pair<size_t, size_t>>& edges_pairs,
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphWeighted(
+    const std::vector<std::pair<vert_t, vert_t>>& edges_pairs,
     const std::vector<weight_t>& weights) {
   if (edges_pairs.empty() && weights.empty()) return Graph();
 
@@ -27,7 +31,7 @@ Graph Graph::GraphWeighted(
         "GraphWeighted: the sizes of the edges and weights vectors do not "
         "match.");
 
-  for (size_t i = 0; i < weights.size(); i++) {
+  for (vert_t i = 0; i < weights.size(); i++) {
     auto edge = Edge(edges_pairs[i].first, edges_pairs[i].second, weights[i]);
     edges.push_back(edge);
   }
@@ -35,8 +39,9 @@ Graph Graph::GraphWeighted(
   return Graph(edges);
 }
 
-Graph Graph::GraphWeighted(
-    const std::vector<std::tuple<size_t, size_t, weight_t>>& edges_tuples) {
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphWeighted(
+    const std::vector<std::tuple<vert_t, vert_t, weight_t>>& edges_tuples) {
   if (edges_tuples.empty()) return Graph();
 
   std::vector<Edge> edges;
@@ -47,14 +52,15 @@ Graph Graph::GraphWeighted(
   return Graph(edges);
 }
 
-Graph Graph::GraphFromMap(
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromMap(
     const std::unordered_map<std::string, weight_t>& edges_dict) {
   if (edges_dict.empty()) return Graph();
 
-  std::vector<Graph::Edge> edges;
+  std::vector<Graph<vert_t, weight_t>::Edge> edges;
 
   for (const auto& [edge_str, weight] : edges_dict) {
-    size_t start_vert, end_vert;
+    vert_t start_vert, end_vert;
     std::tie(start_vert, end_vert) = ParseEdgeString(edge_str);
 
     edges.emplace_back(start_vert, end_vert, weight);
@@ -63,13 +69,15 @@ Graph Graph::GraphFromMap(
   return Graph(edges);
 }
 
-Graph Graph::GraphFromStrs(const std::vector<std::string>& edges_strs) {
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromStrs(
+    const std::vector<std::string>& edges_strs) {
   if (edges_strs.empty()) return Graph();
 
-  std::vector<Graph::Edge> edges;
+  std::vector<Graph<vert_t, weight_t>::Edge> edges;
 
   for (const auto& edge_str : edges_strs) {
-    size_t start_vert, end_vert;
+    vert_t start_vert, end_vert;
     std::tie(start_vert, end_vert) = ParseEdgeString(edge_str);
 
     edges.emplace_back(start_vert, end_vert);
@@ -78,7 +86,8 @@ Graph Graph::GraphFromStrs(const std::vector<std::string>& edges_strs) {
   return Graph(edges);
 }
 
-Graph Graph::GraphFromAdjMatrix(
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromAdjMatrix(
     const std::vector<std::vector<weight_t>>& adj_matrix, bool is_weighted) {
   std::vector<Edge> edges{};
 
@@ -88,14 +97,14 @@ Graph Graph::GraphFromAdjMatrix(
     raise std::invalid_argument(
         "GraphFromAdjMatrix: AdjacencyMatrix is not squared.");
 
-  for (size_t row = 0; row < adj_matrix.size(); row++) {
+  for (vert_t row = 0; row < adj_matrix.size(); row++) {
     if (row != 0)
       if (adj_matrix[row].size() != adj_matrix[row - 1].size())
         raise std::invalid_argument(
             "GraphFromAdjMatrix: AdjacencyMatrix is not squared [row "
             "problem].");
 
-    for (size_t col = 0; col < adj_matrix[row].size(); col++) {
+    for (vert_t col = 0; col < adj_matrix[row].size(); col++) {
       if (adj_matrix[row][col] == 0) continue;
 
       if (is_weighted)
@@ -108,24 +117,27 @@ Graph Graph::GraphFromAdjMatrix(
   return Graph(edges);
 }
 
-Graph Graph::GraphFromAdjList(
-    const std::vector<std::vector<size_t>>& adj_list) {
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t> Graph<vert_t, weight_t>::GraphFromAdjList(
+    const std::vector<std::vector<vert_t>>& adj_list) {
   if (adj_list.empty()) return Graph();
 
   std::vector<Edge> edges{};
 
-  for (size_t row = 0; row < adj_list.size(); row++)
-    for (size_t col = 0; col < adj_list[row].size(); col++)
+  for (vert_t row = 0; row < adj_list.size(); row++)
+    for (vert_t col = 0; col < adj_list[row].size(); col++)
       edges.push_back(Edge(row, adj_list[row][col]));
 
   return Graph(edges);
 }
 
-Graph::Graph(const std::vector<Edge>& edges) : edges_{edges}, verts_() {
+template <typename vert_t, typename weight_t>
+Graph<vert_t, weight_t>::Graph(const std::vector<Edge>& edges)
+    : edges_{edges}, verts_() {
   if (edges.empty()) return;
 
   // кол-во вершин = максимальная вершина среди ребер
-  size_t max_vert = 0;
+  vert_t max_vert = 0;
   for (const auto& edge : edges_) {
     max_vert = std::max(max_vert, edge.StartVert());
     max_vert = std::max(max_vert, edge.EndVert());
