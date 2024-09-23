@@ -121,11 +121,11 @@ class Graph {
   /// @brief Проверяет, взвешен ли граф
   bool IsWeighted() const;
 
-  /// @return vert_t: кол-во вершин
-  vert_t VertsAmount() const { return verts_.size(); }
+  /// @return size_t: кол-во вершин
+  size_t VertsAmount() const { return verts_.size(); }
 
   /// @return vert_t: кол-во ребер
-  vert_t EdgesAmount() const { return edges_.size(); }
+  size_t EdgesAmount() const { return edges_.size(); }
 
   /// @return const std::vector<vert_t>&: вершины
   const std::vector<vert_t>& Verts() const { return verts_; }
