@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "graph.hpp"
+#include "graph/graph.hpp"
 
 int main() {
-  Graph();
+  Graph<int, long>();
   return 0;
 }

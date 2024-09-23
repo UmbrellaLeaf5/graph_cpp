@@ -2,7 +2,7 @@
 
 #include "graph/graph.hpp"
 
-TEST(GraphTest, CreateNonWeightedGraph) {
+TEST(GraphTest_size_t, CreateNonWeightedGraph) {
   std::vector<std::pair<size_t, size_t>> edges_pairs = {{0, 1}, {1, 2}, {2, 0}};
   Graph<size_t, long> graph =
       Graph<size_t, long>::GraphNonWeighted(edges_pairs);
@@ -14,7 +14,7 @@ TEST(GraphTest, CreateNonWeightedGraph) {
   ASSERT_TRUE(graph.IsDirected());
 }
 
-TEST(GraphTest, CreateWeightedGraph) {
+TEST(GraphTest_size_t, CreateWeightedGraph) {
   std::vector<std::pair<size_t, size_t>> edges_pairs = {{0, 1}, {1, 2}, {2, 0}};
   std::vector<long> weights = {1, 2, 3};
   Graph<size_t, long> graph =
@@ -27,7 +27,7 @@ TEST(GraphTest, CreateWeightedGraph) {
   ASSERT_TRUE(graph.IsDirected());
 }
 
-TEST(GraphTest, CreateGraphFromAdjacencyMatrix) {
+TEST(GraphTest_size_t, CreateGraphFromAdjacencyMatrix) {
   std::vector<std::vector<long>> adj_matrix = {{0, 1, 0}, {1, 0, 1}, {0, 1, 0}};
   Graph<size_t, long> graph =
       Graph<size_t, long>::GraphFromAdjMatrix(adj_matrix);
@@ -46,7 +46,7 @@ TEST(GraphTest, CreateGraphFromAdjacencyMatrix) {
   // std::cout << graph.GetAdjList() << std::endl;
 }
 
-TEST(GraphTest, CreateGraphFromAdjacencyMatrix2) {
+TEST(GraphTest_size_t, CreateGraphFromAdjacencyMatrix2) {
   std::vector<std::vector<long>> adj_matrix = {{0, 1, 0}, {1, 0, 1}, {0, 1, 0}};
   Graph<size_t, long> graph =
       Graph<size_t, long>::GraphFromAdjMatrix(adj_matrix);
@@ -60,7 +60,7 @@ TEST(GraphTest, CreateGraphFromAdjacencyMatrix2) {
   // std::cout << graph.GetAdjList() << std::endl;
 }
 
-TEST(GraphTest, CreateWeightedGraphFromAdjacencyMatrix) {
+TEST(GraphTest_size_t, CreateWeightedGraphFromAdjacencyMatrix) {
   std::vector<std::vector<long>> adj_matrix = {{0, 1, 0}, {1, 0, 5}, {0, 7, 0}};
   Graph<size_t, long> graph =
       Graph<size_t, long>::GraphFromAdjMatrix(adj_matrix, true);
@@ -81,7 +81,7 @@ TEST(GraphTest, CreateWeightedGraphFromAdjacencyMatrix) {
   // std::cout << graph << std::endl;
 }
 
-TEST(GraphTest, CreateWeightedGraphFromAdjacencyMatrix2) {
+TEST(GraphTest_size_t, CreateWeightedGraphFromAdjacencyMatrix2) {
   std::vector<std::vector<long>> adj_matrix = {{0, 1, 0}, {1, 0, 9}, {0, 6, 0}};
   Graph<size_t, long> graph =
       Graph<size_t, long>::GraphFromAdjMatrix(adj_matrix, true);
@@ -95,7 +95,7 @@ TEST(GraphTest, CreateWeightedGraphFromAdjacencyMatrix2) {
   // std::cout << graph.GetAdjList() << std::endl;
 }
 
-TEST(GraphTest, CreateGraphFromAdjacencyList) {
+TEST(GraphTest_size_t, CreateGraphFromAdjacencyList) {
   std::vector<std::vector<size_t>> adj_list = {{1}, {0, 2}, {1}};
   Graph<size_t, long> graph = Graph<size_t, long>::GraphFromAdjList(adj_list);
 
@@ -116,7 +116,7 @@ TEST(GraphTest, CreateGraphFromAdjacencyList) {
   // std::cout << graph.GetAdjList() << std::endl;
 }
 
-TEST(GraphTest, MakeUndirected) {
+TEST(GraphTest_size_t, MakeUndirected) {
   std::vector<std::pair<size_t, size_t>> edges = {{0, 1}, {1, 2}, {2, 0}};
   Graph<size_t, long> g = Graph<size_t, long>::GraphNonWeighted(edges);
 
@@ -125,7 +125,7 @@ TEST(GraphTest, MakeUndirected) {
   ASSERT_FALSE(g.IsDirected());
 }
 
-TEST(GraphTest, CreateGraphWithEmptyEdges) {
+TEST(GraphTest_size_t, CreateGraphWithEmptyEdges) {
   std::vector<std::pair<size_t, size_t>> edges;
   Graph<size_t, long> g = Graph<size_t, long>::GraphNonWeighted(edges);
 
@@ -135,7 +135,7 @@ TEST(GraphTest, CreateGraphWithEmptyEdges) {
   ASSERT_TRUE(g.IsDirected());
 }
 
-TEST(GraphTest, CreateGraphWithDuplicateEdges) {
+TEST(GraphTest_size_t, CreateGraphWithDuplicateEdges) {
   std::vector<std::pair<size_t, size_t>> edges = {
       {0, 1}, {1, 2}, {0, 1}, {2, 1}, {1, 2}};
   // для скорости работы по умолчанию дубликаты допускаются
@@ -161,7 +161,7 @@ TEST(GraphTest, CreateGraphWithDuplicateEdges) {
   ASSERT_FALSE(g.IsDirected());
 }
 
-TEST(GraphTest, CreateGraphWithInvalidWeights) {
+TEST(GraphTest_size_t, CreateGraphWithInvalidWeights) {
   std::vector<std::pair<size_t, size_t>> edges = {{0, 1}, {1, 2}, {2, 0}};
   std::vector<long> weights = {1, 2, -1};
 
@@ -169,14 +169,14 @@ TEST(GraphTest, CreateGraphWithInvalidWeights) {
   //              std::invalid_argument);
 }
 
-TEST(GraphTest, CreateGraphFromAdjMatrixWithInvalidSize) {
+TEST(GraphTest_size_t, CreateGraphFromAdjMatrixWithInvalidSize) {
   std::vector<std::vector<long>> adj_matrix = {{0, 1}, {1, 0, 1}, {1, 0}};
 
   // ASSERT_THROW(Graph<size_t, long>::GraphFromAdjMatrix(adj_matrix),
   //              std::invalid_argument);
 }
 
-TEST(GraphTest, GraphFromMapTest) {
+TEST(GraphTest_size_t, GraphFromMapTest) {
   std::unordered_map<std::string, long> edges_dict = {
       {"0->1", 5}, {"2->1", 1}, {"3->2", 2}, {"1->3", 3}};
   Graph<size_t, long> graph = Graph<size_t, long>::GraphFromMap(edges_dict);
@@ -221,7 +221,7 @@ TEST(GraphTest, GraphFromMapTest) {
   ASSERT_TRUE(graph.IsDirected());
 }
 
-TEST(GraphTest, GraphFromStrsTest) {
+TEST(GraphTest_size_t, GraphFromStrsTest) {
   std::vector<std::string> edges_strs = {"0->1", "2->1", "3->2", "1->3"};
   Graph<size_t, long> graph = Graph<size_t, long>::GraphFromStrs(edges_strs);
 
@@ -250,7 +250,7 @@ TEST(GraphTest, GraphFromStrsTest) {
   //              std::invalid_argument);
 }
 
-TEST(GraphTest, GraphWeighted_EmptyInput) {
+TEST(GraphTest_size_t, GraphWeighted_EmptyInput) {
   std::vector<std::tuple<size_t, size_t, long>> empty_input;
   Graph<size_t, long> graph = Graph<size_t, long>::GraphWeighted(empty_input);
 
@@ -258,7 +258,7 @@ TEST(GraphTest, GraphWeighted_EmptyInput) {
   ASSERT_EQ(graph.EdgesAmount(), 0);
 }
 
-TEST(GraphTest, GraphWeighted_SingleEdge) {
+TEST(GraphTest_size_t, GraphWeighted_SingleEdge) {
   std::vector<std::tuple<size_t, size_t, long>> input = {{0, 1, 5}};
   Graph<size_t, long> graph = Graph<size_t, long>::GraphWeighted(input);
 
@@ -267,7 +267,7 @@ TEST(GraphTest, GraphWeighted_SingleEdge) {
   ASSERT_TRUE(graph.IsWeighted());
 }
 
-TEST(GraphTest, GraphWeighted_MultipleEdges) {
+TEST(GraphTest_size_t, GraphWeighted_MultipleEdges) {
   std::vector<std::tuple<size_t, size_t, long>> input = {
       {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
   Graph<size_t, long> graph = Graph<size_t, long>::GraphWeighted(input);
@@ -277,7 +277,7 @@ TEST(GraphTest, GraphWeighted_MultipleEdges) {
   ASSERT_TRUE(graph.IsWeighted());
 }
 
-TEST(GraphTest, Edges_EmptyGraph) {
+TEST(GraphTest_size_t, Edges_EmptyGraph) {
   std::vector<std::tuple<size_t, size_t, long>> empty_input;
   Graph<size_t, long> graph = Graph<size_t, long>::GraphWeighted(empty_input);
   auto edges = graph.Edges();
@@ -285,7 +285,7 @@ TEST(GraphTest, Edges_EmptyGraph) {
   ASSERT_TRUE(edges.empty());
 }
 
-TEST(GraphTest, Edges_SingleEdge) {
+TEST(GraphTest_size_t, Edges_SingleEdge) {
   std::vector<std::tuple<size_t, size_t, long>> input = {{0, 1, 5}};
   Graph<size_t, long> graph = Graph<size_t, long>::GraphWeighted(input);
   auto edges = graph.Edges();
@@ -296,7 +296,7 @@ TEST(GraphTest, Edges_SingleEdge) {
   ASSERT_EQ(WeightFromTuple(edges[0]), 5);
 }
 
-TEST(GraphTest, Edges_MultipleEdges) {
+TEST(GraphTest_size_t, Edges_MultipleEdges) {
   std::vector<std::tuple<size_t, size_t, long>> input = {
       {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
   Graph<size_t, long> graph = Graph<size_t, long>::GraphWeighted(input);
@@ -317,7 +317,7 @@ TEST(GraphTest, Edges_MultipleEdges) {
   ASSERT_EQ(WeightFromTuple(edges[2]), 3);
 }
 
-TEST(GraphTest, Edges_ConstAccess) {
+TEST(GraphTest_size_t, Edges_ConstAccess) {
   std::vector<std::tuple<size_t, size_t, long>> input = {
       {0, 1, 5}, {1, 2, 10}, {2, 0, 3}};
   Graph<size_t, long> graph = Graph<size_t, long>::GraphWeighted(input);
@@ -330,7 +330,7 @@ TEST(GraphTest, Edges_ConstAccess) {
   ASSERT_EQ(WeightFromTuple(edges[0]), 5);
 }
 
-TEST(GraphTest, ContainsEdgeWeighted) {
+TEST(GraphTest_size_t, ContainsEdgeWeighted) {
   Graph<size_t, long> g =
       Graph<size_t, long>::GraphWeighted({{0, 1, 5}, {1, 2, 10}, {2, 0, 3}});
 
@@ -343,7 +343,7 @@ TEST(GraphTest, ContainsEdgeWeighted) {
   ASSERT_FALSE(g.ContainsEdge({2, 1, 3}));
 }
 
-TEST(GraphTest, ContainsEdgeNonWeighted) {
+TEST(GraphTest_size_t, ContainsEdgeNonWeighted) {
   Graph<size_t, long> g =
       Graph<size_t, long>::GraphNonWeighted({{0, 1}, {1, 2}, {2, 0}});
 
@@ -356,19 +356,19 @@ TEST(GraphTest, ContainsEdgeNonWeighted) {
   ASSERT_FALSE(g.ContainsEdge({2, 1}));
 }
 
-TEST(GraphTest, ContainsEdgeThrowsOnNonWeightedGraph) {
+TEST(GraphTest_size_t, ContainsEdgeThrowsOnNonWeightedGraph) {
   Graph<size_t, long> g =
       Graph<size_t, long>::GraphNonWeighted({{0, 1}, {1, 2}, {2, 0}});
   ASSERT_THROW(g.ContainsEdge({0, 1, 5}), std::logic_error);
 }
 
-TEST(GraphTest, ContainsEdgeThrowsOnNegativeWeight) {
+TEST(GraphTest_size_t, ContainsEdgeThrowsOnNegativeWeight) {
   Graph<size_t, long> g =
       Graph<size_t, long>::GraphWeighted({{0, 1, 5}, {1, 2, 10}, {2, 0, 3}});
   ASSERT_THROW(g.ContainsEdge({0, 1, -5}), std::logic_error);
 }
 
-TEST(GraphTest, GetWeightOfExistingEdge) {
+TEST(GraphTest_size_t, GetWeightOfExistingEdge) {
   Graph<size_t, long> graph = Graph<size_t, long>::GraphWeighted(
       {{0, 1, 250L}, {1, 2, 370L}, {2, 0, 120L}});
 
@@ -377,7 +377,7 @@ TEST(GraphTest, GetWeightOfExistingEdge) {
   ASSERT_EQ(graph.GetWeightOfEdge({2, 0}), 120L);
 }
 
-TEST(GraphTest, GetWeightOfNonExistingEdge) {
+TEST(GraphTest_size_t, GetWeightOfNonExistingEdge) {
   Graph<size_t, long> graph = Graph<size_t, long>::GraphWeighted(
       {{0, 1, 250L}, {1, 2, 370L}, {2, 0, 120L}});
 
@@ -385,14 +385,14 @@ TEST(GraphTest, GetWeightOfNonExistingEdge) {
   ASSERT_THROW(graph.GetWeightOfEdge({1, 0}), std::invalid_argument);
 }
 
-TEST(GraphTest, GetWeightOfEdgeInNonWeightedGraph) {
+TEST(GraphTest_size_t, GetWeightOfEdgeInNonWeightedGraph) {
   Graph<size_t, long> non_weighted_graph =
       Graph<size_t, long>::GraphNonWeighted({{0, 1}, {1, 2}, {2, 0}});
 
   ASSERT_THROW(non_weighted_graph.GetWeightOfEdge({0, 1}), std::logic_error);
 }
 
-TEST(GraphTest, AddVert) {
+TEST(GraphTest_size_t, AddVert) {
   Graph<size_t, long> g;
 
   // Тест добавления новой вершины
@@ -406,7 +406,7 @@ TEST(GraphTest, AddVert) {
   EXPECT_TRUE(Contains(g.Verts(), size_t(0)));
 }
 
-TEST(GraphTest, AddEdgeUnweighted) {
+TEST(GraphTest_size_t, AddEdgeUnweighted) {
   Graph<size_t, long> g;
 
   g.AddEdge(0, 1);
@@ -423,7 +423,7 @@ TEST(GraphTest, AddEdgeUnweighted) {
   EXPECT_TRUE(Contains(g.Verts(), size_t(3)));
 }
 
-TEST(GraphTest, AddEdgeWeighted) {
+TEST(GraphTest_size_t, AddEdgeWeighted) {
   Graph<size_t, long> g;
 
   g.AddEdge(0, 1, 10);
@@ -450,7 +450,7 @@ TEST(GraphTest, AddEdgeWeighted) {
   EXPECT_THROW(g.AddEdge(2, 3), std::logic_error);
 }
 
-TEST(GraphTest, RemoveVert) {
+TEST(GraphTest_size_t, RemoveVert) {
   Graph<size_t, long> g;
   g.AddVert(1);
   g.AddVert(2);
@@ -466,7 +466,7 @@ TEST(GraphTest, RemoveVert) {
   ASSERT_THROW(g.RemoveVert(4), std::invalid_argument);
 }
 
-TEST(GraphTest, RemoveEdgeByPair) {
+TEST(GraphTest_size_t, RemoveEdgeByPair) {
   Graph<size_t, long> g;
   g.AddVert(1);
   g.AddVert(2);
@@ -485,7 +485,7 @@ TEST(GraphTest, RemoveEdgeByPair) {
   ASSERT_THROW(g.RemoveEdge({1, 3}), std::invalid_argument);
 }
 
-TEST(GraphTest, RemoveEdgeByTuple) {
+TEST(GraphTest_size_t, RemoveEdgeByTuple) {
   Graph<size_t, long> g;
   g.AddVert(1);
   g.AddVert(2);
@@ -500,7 +500,7 @@ TEST(GraphTest, RemoveEdgeByTuple) {
   ASSERT_THROW(g.RemoveEdge({1, 3, 10}), std::invalid_argument);
 }
 
-TEST(GraphTest, AddAndRemoveVerts) {
+TEST(GraphTest_size_t, AddAndRemoveVerts) {
   Graph<size_t, long> g;
   EXPECT_EQ(g.VertsAmount(), 0);
 
@@ -519,7 +519,7 @@ TEST(GraphTest, AddAndRemoveVerts) {
   EXPECT_TRUE(Contains(g.Verts(), size_t(3)));
 }
 
-TEST(GraphTest, AddAndRemoveEdges) {
+TEST(GraphTest_size_t, AddAndRemoveEdges) {
   Graph<size_t, long> g;
   g.AddVert(1);
   g.AddVert(2);
@@ -537,7 +537,7 @@ TEST(GraphTest, AddAndRemoveEdges) {
   EXPECT_TRUE(g.ContainsEdge({2, 3, 7}));
 }
 
-TEST(GraphTest, ContainsAndGetVerts) {
+TEST(GraphTest_size_t, ContainsAndGetVerts) {
   Graph<size_t, long> g;
   g.AddVert(1);
   g.AddVert(2);
@@ -555,7 +555,7 @@ TEST(GraphTest, ContainsAndGetVerts) {
   EXPECT_TRUE(std::find(verts.begin(), verts.end(), 3) != verts.end());
 }
 
-TEST(GraphTest, RemoveEdgeFromDirectedGraph) {
+TEST(GraphTest_size_t, RemoveEdgeFromDirectedGraph) {
   Graph<size_t, long> graph_directed{};
   graph_directed.AddVert(0);
   graph_directed.AddVert(1);
@@ -568,7 +568,7 @@ TEST(GraphTest, RemoveEdgeFromDirectedGraph) {
   ASSERT_TRUE(graph_directed.ContainsEdge({1, 2}));
 }
 
-TEST(GraphTest, RemoveEdgeFromUndirectedGraph) {
+TEST(GraphTest_size_t, RemoveEdgeFromUndirectedGraph) {
   Graph<size_t, long> graph_undirected{};
   graph_undirected.AddVert(0);
   graph_undirected.AddVert(1);
@@ -584,7 +584,7 @@ TEST(GraphTest, RemoveEdgeFromUndirectedGraph) {
   ASSERT_TRUE(graph_undirected.ContainsEdge({1, 2}));
 }
 
-TEST(GraphTest, RemoveNonExistentEdgeThrowsException) {
+TEST(GraphTest_size_t, RemoveNonExistentEdgeThrowsException) {
   Graph<size_t, long> graph_directed{};
   graph_directed.AddVert(0);
   graph_directed.AddVert(1);

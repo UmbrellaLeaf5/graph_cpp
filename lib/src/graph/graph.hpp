@@ -8,7 +8,14 @@
 
 #include "../lib/utils.hpp"
 
-// using weight_t = long;
+template <typename T1>
+concept AllowedVertType =
+    std::is_same_v<T1, std::string> || std::is_same_v<T1, short> ||
+    std::is_same_v<T1, int> || std::is_same_v<T1, size_t>;
+
+template <typename T2>
+concept AllowedWeightType =
+    std::is_same_v<T2, long> || std::is_same_v<T2, double>;
 
 /**
  * @brief Класс графа (может быть взвешенным и ориентированным)
@@ -22,7 +29,12 @@ template <typename vert_t, typename weight_t>
 class Graph {
  public:
   /// @brief Инициализирует новый экземпляр Graph
-  Graph() : edges_(), verts_() {}
+  Graph() : edges_(), verts_() {
+    static_assert(AllowedVertType<vert_t>,
+                  "This vertice type parameter is not allowed");
+    static_assert(AllowedWeightType<weight_t>,
+                  "This weight type parameter is not allowed");
+  }
 
   /**
    * @brief Создает новый экземпляр Graph по ребрам,
