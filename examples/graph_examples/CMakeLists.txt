@@ -16,5 +16,3 @@ include_directories(${PROJECT_NAME} PUBLIC ../../lib/)
 
 add_executable(${PROJECT_NAME} ${source_list})
 target_link_libraries(${PROJECT_NAME} PUBLIC graph_cpp)
-
-target_link_libraries(graph_cpp)

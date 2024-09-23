@@ -3,19 +3,16 @@
 // std libs:
 #include <algorithm>
 #include <iostream>
+#include <numeric>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
+#include <variant>
 #include <vector>
 
-// clang-format off
-
-#define pass {}
-#define raise throw
-#define except catch
-
 using std::size_t;
-// clang-format on
 
 /**
  * @brief Выводит все элементы пары в поток
@@ -31,6 +28,14 @@ inline std::ostream& operator<<(std::ostream& os,
   return os << "{" << pair.first << "; " << pair.second << "}";
 }
 
+/**
+ * @brief Выводит все элементы std::tuple в поток
+ * @tparam I: текущий индекс, обрабатываемый в кортеже
+ * @tparam Ts: типы элементов в кортеже
+ * @param os: выходной поток, в который будут записаны элементы кортежа
+ * @param t: кортеж, который нужно распечатать
+ * @return std::ostream&: модифицированный выходной поток
+ */
 template <std::size_t I = 0, typename... Ts>
 static std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
   if constexpr (I < sizeof...(Ts)) {
@@ -44,6 +49,13 @@ static std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
   }
 }
 
+/**
+ * @brief Выводит все элементы std::tuple в поток
+ * @tparam Ts: типы элементов в кортеже.
+ * @param os: выходной поток, в который будет записан кортеж.
+ * @param t: кортеж, который нужно распечатать.
+ * @return std::ostream&: модифицированный выходной поток
+ */
 template <typename... Ts>
 std::ostream& operator<<(std::ostream& os, const std::tuple<Ts...>& t) {
   os << "{";
@@ -51,9 +63,14 @@ std::ostream& operator<<(std::ostream& os, const std::tuple<Ts...>& t) {
   return os << "}";
 }
 
-#include <iostream>
-#include <unordered_map>
-
+/**
+ * @brief Выводит все элементы std::unordered_map в выходной поток
+ * @tparam K: тип ключей в неупорядоченной карте
+ * @tparam V: тип значений в неупорядоченной карте
+ * @param os: выходной поток, в который будет записан словарь
+ * @param map: словарь, который нужно распечатать
+ * @return std::ostream&: модифицированный выходной поток
+ */
 template <typename K, typename V>
 std::ostream& operator<<(std::ostream& os,
                          const std::unordered_map<K, V>& map) {
