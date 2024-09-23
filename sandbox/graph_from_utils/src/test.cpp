@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "graph.hpp"
+#include "graph/graph.hpp"
 
 TEST(GraphTest, CreateNonWeightedGraph) {
   std::vector<std::pair<size_t, size_t>> edges_pairs = {{0, 1}, {1, 2}, {2, 0}};

@@ -1,4 +1,4 @@
-#include "../../graph.hpp"
+#include "../graph.hpp"
 
 template class Graph<size_t, long>;
 
