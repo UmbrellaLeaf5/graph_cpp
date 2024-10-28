@@ -3,7 +3,7 @@
 template class Graph<std::string, long>;
 template class Graph<std::string, double>;
 
-template <typename vert_t, typename weight_t>
+template <AllowedVertType vert_t, AllowedWeightType weight_t>
 void Graph<vert_t, weight_t>::RemoveVert(vert_t vert) {
   if (!Contains(Verts(), vert))
     throw std::invalid_argument("RemoveVert: there is no such vert in graph: " +
@@ -19,10 +19,10 @@ void Graph<vert_t, weight_t>::RemoveVert(vert_t vert) {
                edges_.end());
 }
 
-template <typename vert_t, typename weight_t>
+template <AllowedVertType vert_t, AllowedWeightType weight_t>
 std::pair<vert_t, vert_t> Graph<vert_t, weight_t>::ParseEdgeString(
     const std::string& edge_str) {
-  size_t pos = edge_str.find("->");
+  const size_t pos = edge_str.find("->");
 
   if (pos == std::string::npos)
     throw std::invalid_argument("EdgeString: invalid edge string format: " +
@@ -36,14 +36,14 @@ std::pair<vert_t, vert_t> Graph<vert_t, weight_t>::ParseEdgeString(
 
 // DELETED methods
 
-template <typename vert_t, typename weight_t>
+template <AllowedVertType vert_t, AllowedWeightType weight_t>
 std::vector<std::vector<vert_t>>
 Graph<vert_t, weight_t>::GetAdjListWithoutKeys() const {
   throw std::logic_error(
       "GetAdjListWithoutKeys: this method is deleted for std::string.");
 }
 
-template <typename vert_t, typename weight_t>
+template <AllowedVertType vert_t, AllowedWeightType weight_t>
 std::vector<std::vector<weight_t>> Graph<vert_t, weight_t>::GetAdjMatrix()
     const {
   throw std::logic_error(

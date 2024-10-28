@@ -28,6 +28,8 @@ inline std::ostream& operator<<(std::ostream& os,
   return os << "{" << pair.first << "; " << pair.second << "}";
 }
 
+namespace {
+
 /**
  * @brief Выводит все элементы std::tuple в поток
  * @tparam I: текущий индекс, обрабатываемый в кортеже
@@ -37,7 +39,7 @@ inline std::ostream& operator<<(std::ostream& os,
  * @return std::ostream&: модифицированный выходной поток
  */
 template <std::size_t I = 0, typename... Ts>
-static std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
+inline std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
   if constexpr (I < sizeof...(Ts)) {
     if (I != 0) os << "; ";
 
@@ -47,6 +49,8 @@ static std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
     return os;
 }
 
+}  // namespace
+
 /**
  * @brief Выводит все элементы std::tuple в поток
  * @tparam Ts: типы элементов в кортеже.
@@ -55,7 +59,7 @@ static std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
  * @return std::ostream&: модифицированный выходной поток
  */
 template <typename... Ts>
-std::ostream& operator<<(std::ostream& os, const std::tuple<Ts...>& t) {
+inline std::ostream& operator<<(std::ostream& os, const std::tuple<Ts...>& t) {
   os << "{";
   PrintTuple(os, t);
   return os << "}";
@@ -90,8 +94,8 @@ inline std::ostream& operator<<(std::ostream& os,
  * @return std::ostream&: модифицированный выходной поток
  */
 template <typename K, typename V>
-std::ostream& operator<<(std::ostream& os,
-                         const std::unordered_map<K, V>& map) {
+inline std::ostream& operator<<(std::ostream& os,
+                                const std::unordered_map<K, V>& map) {
   os << "{";
 
   bool first = true;
@@ -110,7 +114,17 @@ std::ostream& operator<<(std::ostream& os,
  * @param number: число типа float
  * @return std::string: итоговое число, записанное в строку
  */
-std::string ErasedZerosStr(float number);
+inline std::string ErasedZerosStr(float number) {
+  std::string str = std::to_string(number);
+
+  // удаляем незначащие нули
+  str.erase(str.find_last_not_of('0') + 1, std::string::npos);
+
+  // если последний символ - десятичная точка, удаляем
+  if (str.back() == '.') str.pop_back();
+
+  return str;
+}
 
 /**
  * @brief перегрузка, которая вводит все элементы вектора из потока
@@ -164,7 +178,6 @@ inline std::istream& operator>>(std::istream& is, std::vector<Type>& vec) {
  * @return false: элемент не найден
  */
 template <typename T>
-bool Contains(const std::vector<T>& vec, const T& value) {
-  auto it = std::find(vec.begin(), vec.end(), value);
-  return it != vec.end();
+inline bool Contains(const std::vector<T>& vec, const T& value) {
+  return std::find(vec.begin(), vec.end(), value) != vec.end();
 }
