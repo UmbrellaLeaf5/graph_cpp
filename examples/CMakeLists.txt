@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(examples)
+project(examples LANGUAGES CXX)
 
-file(GLOB_RECURSE tasks_dirs LIST_DIRECTORIES true ".")
+file(GLOB_RECURSE DIRS LIST_DIRECTORIES true ".")
 
-foreach(dir ${tasks_dirs})
-  IF(IS_DIRECTORY ${dir})
-    IF(NOT ${dir} MATCHES ".*src.*")
-      add_subdirectory(${dir})
+foreach(DIR ${DIRS})
+  IF(IS_DIRECTORY ${DIR})
+    IF(NOT ${DIR} MATCHES ".*src.*")
+      add_subdirectory(${DIR})
     ENDIF()
   ELSE()
     CONTINUE()
