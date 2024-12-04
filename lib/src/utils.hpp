@@ -28,8 +28,6 @@ inline std::ostream& operator<<(std::ostream& os,
   return os << "{" << pair.first << "; " << pair.second << "}";
 }
 
-namespace {
-
 /**
  * @brief Выводит все элементы std::tuple в поток
  * @tparam I: текущий индекс, обрабатываемый в кортеже
@@ -39,7 +37,7 @@ namespace {
  * @return std::ostream&: модифицированный выходной поток
  */
 template <std::size_t I = 0, typename... Ts>
-inline std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
+static std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
   if constexpr (I < sizeof...(Ts)) {
     if (I != 0) os << "; ";
 
@@ -49,8 +47,6 @@ inline std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
     return os;
 }
 
-}  // namespace
-
 /**
  * @brief Выводит все элементы std::tuple в поток
  * @tparam Ts: типы элементов в кортеже.
@@ -59,7 +55,7 @@ inline std::ostream& PrintTuple(std::ostream& os, const std::tuple<Ts...>& t) {
  * @return std::ostream&: модифицированный выходной поток
  */
 template <typename... Ts>
-inline std::ostream& operator<<(std::ostream& os, const std::tuple<Ts...>& t) {
+std::ostream& operator<<(std::ostream& os, const std::tuple<Ts...>& t) {
   os << "{";
   PrintTuple(os, t);
   return os << "}";
@@ -94,8 +90,8 @@ inline std::ostream& operator<<(std::ostream& os,
  * @return std::ostream&: модифицированный выходной поток
  */
 template <typename K, typename V>
-inline std::ostream& operator<<(std::ostream& os,
-                                const std::unordered_map<K, V>& map) {
+std::ostream& operator<<(std::ostream& os,
+                         const std::unordered_map<K, V>& map) {
   os << "{";
 
   bool first = true;
@@ -178,6 +174,7 @@ inline std::istream& operator>>(std::istream& is, std::vector<Type>& vec) {
  * @return false: элемент не найден
  */
 template <typename T>
-inline bool Contains(const std::vector<T>& vec, const T& value) {
-  return std::find(vec.begin(), vec.end(), value) != vec.end();
+bool Contains(const std::vector<T>& vec, const T& value) {
+  auto it = std::find(vec.begin(), vec.end(), value);
+  return it != vec.end();
 }

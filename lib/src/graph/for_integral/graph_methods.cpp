@@ -1,12 +1,6 @@
 #include "../graph.hpp"
 
-template class Graph<short, long>;
-template class Graph<int, long>;
-template class Graph<size_t, long>;
-
-template class Graph<short, double>;
-template class Graph<int, double>;
-template class Graph<size_t, double>;
+GRAPH_TEMPLATE_CONSTRUCT_FOR_INTEGRAL;
 
 template <AllowedVertType vert_t, AllowedWeightType weight_t>
 std::vector<std::vector<vert_t>>
@@ -35,7 +29,7 @@ std::vector<std::vector<weight_t>> Graph<vert_t, weight_t>::GetAdjMatrix()
         adj_matrix[edge.EndVert()][edge.StartVert()] = edge.Weight();
     } else {
       adj_matrix[edge.StartVert()][edge.EndVert()] = 1;
-      adj_matrix[edge.EndVert()][edge.StartVert()] = 1;
+      if (!IsDirected()) adj_matrix[edge.EndVert()][edge.StartVert()] = 1;
     }
 
   return adj_matrix;
@@ -44,7 +38,7 @@ std::vector<std::vector<weight_t>> Graph<vert_t, weight_t>::GetAdjMatrix()
 template <AllowedVertType vert_t, AllowedWeightType weight_t>
 std::pair<vert_t, vert_t> Graph<vert_t, weight_t>::ParseEdgeString(
     const std::string& edge_str) {
-  vert_t pos = edge_str.find("->");
+  const vert_t pos = edge_str.find("->");
 
   if (size_t(pos) == std::string::npos)
     throw std::invalid_argument("EdgeString: invalid edge string format: " +
@@ -57,7 +51,7 @@ std::pair<vert_t, vert_t> Graph<vert_t, weight_t>::ParseEdgeString(
     return {start_vert, end_vert};
   }
 
-  catch (...) {
+  catch (const std::exception&) {
     throw std::invalid_argument(
         "EdgeString: invalid edge string format "
         "(vertices should be numbers): " +
