@@ -27,7 +27,7 @@ target_link_libraries(project_name PUBLIC graph_cpp)
 ```C++
 #include <iostream>
 
-#include "graph/graph.hpp"
+#include "graph.hpp"
 
 int main() {
   std::cout << std::endl
